@@ -96,10 +96,15 @@ namespace Test
         /// Возвращает длину матрицы по вертикали
         /// </summary>
         /// <returns>Длина матрицы по вертикали, т.е.
-        /// количество строк</returns>
+        /// количество строк</returns>ё
         public int AmountOfRows
         {
             get { return amountOfRows; }
+        }
+
+        public double[,] GetMatrix
+        {
+            get { return matrix; }
         }
         /// <summary>
         /// Возвращает элемент по заданной строке и столбцу
@@ -246,6 +251,21 @@ namespace Test
                 for (int j = 0; j < AmountOfRows; j++)
                 {
                     mat.SetElem(i, j, matrix[i, j] * value);
+                }
+            }
+
+            return mat;
+        }
+
+        public Matrix Transpose()
+        {
+            Matrix mat = new Matrix(AmountOfCols, AmountOfRows);
+
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                for (int j = 0; j < AmountOfRows; j++)
+                {
+                    mat.SetElem(j, i, this[i, j]);
                 }
             }
 
@@ -447,6 +467,15 @@ namespace Test
             this.amountOfRows = matrix.GetLength(0);
             this.amountOfCols = this.amountOfRows;
         }
+        public SquareMatrix(Matrix matrix)
+        {
+            if (matrix.AmountOfCols != matrix.AmountOfRows)
+                throw new ArgumentException("Массив должен быть квадратным");
+
+            this.matrix = matrix.GetMatrix;
+            this.amountOfRows = matrix.AmountOfRows;
+            this.amountOfCols = this.amountOfRows;
+        }
         /// <summary>
         /// Конструктор, создающий новую пустую квадратную
         /// матрицу данного размера
@@ -459,6 +488,33 @@ namespace Test
         /// <returns>Детерминант текущей матрицы</returns>
         public double Determinant()
         {
+            return Determinant(this.GetMatrix);
+        }
+        public static double Determinant(double[,] matrix)
+        {
+            if (matrix.GetLength(0) == 1)
+                return matrix[0, 0];
+            double det = 0;
+            int size = matrix.GetLength(0);
+            int rowToExclude = 0;// Строка которую исключаем
+            for (int col = 0; col < size; col++)
+            {
+                var tMatrix = new double[size - 1, size - 1];//Под матрица для вычисления минора
+                for (int tRow = 0; tRow < size - 1; tRow++)
+                {
+                    for (int tCol = 0; tCol < size - 1; tCol++)
+                    {
+                        int OriginalRow = (tRow < rowToExclude) ? tRow : tRow + 1;
+                        int subMatrix = (tCol < col) ? tCol : tCol + 1;
+                        tMatrix[tRow, tCol] = matrix[OriginalRow, subMatrix];
+                    }
+                }
+                det += Determinant(tMatrix) * matrix[rowToExclude, col] * (((rowToExclude + col) % 2 == 0) ? 1 : -1);
+            }
+            return det;
+        }
+        public SquareMatrix AdjointMatrix()
+        {
             return default;
         }
         /// <summary>
@@ -467,7 +523,11 @@ namespace Test
         /// <returns>Матрица, обратная к данной</returns>
         public SquareMatrix ReversedMatrix()
         {
-            return default;
+            double det = this.Determinant();
+            if (det == 0)
+                throw new ArgumentException("Определитель равен нулю, обратной матрицы не существует!");
+            Matrix transposed = this.AdjointMatrix().Transpose();
+            return new SquareMatrix(transposed * (1/det));
         }
         /// <summary>
         /// Принимая значения матрицы за коэфициент при независимой переменной,
@@ -483,7 +543,20 @@ namespace Test
         /// для i-той независимой переменной</returns>
         public double[] GetRoots(double[] freeCoefs)
         {
-            return default;
+            SquareMatrix inverted = this.ReversedMatrix();
+            double[,] tmp = new double[1, freeCoefs.Length];
+            for (int i = 0; i < freeCoefs.Length; i++)
+            {
+                tmp[1, i] = freeCoefs[i];
+            }
+            Matrix freeCoefsMatrix = new Matrix(tmp);
+            Matrix res = inverted * freeCoefsMatrix;
+            double[] result = new double[freeCoefs.Length];
+            for (int i = 0; i < freeCoefs.Length; i++)
+            {
+                result[i] = res[1, i];
+            }
+            return result;
         }
     }
 }

@@ -7,10 +7,10 @@ namespace P
         {
 
             double[,] m1 = {
-                {0, 1, 5, 2 },
-                {0, 1, 5, 1 },
-                {2, 0, 5, 6 },
-                {0, 1, 5, 0 },
+                {0, 1, 5, 2, 3 },
+                {0, 1, 5, 1, 4 },
+                {2, 0, 5, 6, 2 },
+                {0, 1, 5, 0, 6 },
             };
             double[,] m2 = {
                 {1, 1, 5, 2 },
@@ -26,9 +26,10 @@ namespace P
             };
 
             Matrix matrix1 = new Matrix(m1);
-            Matrix matrix2 = new Matrix(m2);
+            SquareMatrix matrix2 = new SquareMatrix(m2);
 
-            Console.WriteLine(Matrix.GenerateRandomMatrix(20, 20, 0, 10));
+            Console.WriteLine(matrix1 * 5);
+            //Console.WriteLine(matrix2.ReversedMatrix());
         }
     }
 }
