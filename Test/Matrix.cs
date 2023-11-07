@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -513,9 +514,44 @@ namespace Test
             }
             return det;
         }
+        /// <summary>
+        /// Возвращает матрицу, сопряженную к исходной
+        /// </summary>
+        /// <returns>Матрица, сопряженная к исходной</returns>
         public SquareMatrix AdjointMatrix()
         {
-            return default;
+            Matrix cofactored = new Matrix();
+            int size = matrix.GetLength(0);
+
+            for (int row = 0; row < size; row++)
+                for (int col = 0; col < size; col++)
+                    cofactored[row, col] = Math.Pow(-1, row + col) * GetMinor(row, col).Determinant();
+
+            return new SquareMatrix(cofactored.Transpose());
+        }
+        /// <summary>
+        /// Возвращает минор матрицы элемента,
+        /// стоящем в i-ой строке и в j-ом столбце
+        /// </summary>
+        /// <param name="i">номер строки</param>
+        /// <param name="j">номер столбца</param>
+        /// <returns>матрица-минор</returns>
+        public SquareMatrix GetMinor(int i, int j)
+        {
+            SquareMatrix minor = new SquareMatrix();
+            List <double> elems = new List <double>();
+            int size = matrix.GetLength(0);
+
+            for (int row = 0; row < size; row++)
+                for (int col = 0; col < size; col++)
+                    if (col != j && row != i)
+                        elems.Add(matrix[row, col]);
+
+            for (int row = 0; row < size; row++)
+                for (int col = 0; col < size; col++)
+                    foreach (double elem in elems)
+                        minor[row, col] = elem;
+            return minor;
         }
         /// <summary>
         /// Возвращает матрицу, обратную к данной
@@ -529,6 +565,7 @@ namespace Test
             Matrix transposed = this.AdjointMatrix().Transpose();
             return new SquareMatrix(transposed * (1/det));
         }
+        
         /// <summary>
         /// Принимая значения матрицы за коэфициент при независимой переменной,
         /// имеющей степень номера столбца, начиная с нуля, и порядковый номер строки,
