@@ -7,10 +7,11 @@ namespace P
         {
 
             double[,] m1 = {
-                {0, 1, 5, 2, 3 },
-                {0, 1, 5, 1, 4 },
-                {2, 0, 5, 6, 2 },
-                {0, 1, 5, 0, 6 },
+                {-1, 2, 1, 5},
+                {5, 1, 7, 9},
+                {9, 3, 3,8},
+                {7, 4, 4,7},
+
             };
             double[,] m2 = {
                 {1, 1, 5, 2 },
@@ -32,7 +33,7 @@ namespace P
             Matrix matrix1 = new Matrix(m1);
             SquareMatrix matrix2 = new SquareMatrix(m2);
 
-            SquareMatrix matrix3 = new SquareMatrix(m4);
+            SquareMatrix matrix3 = new SquareMatrix(m1);
             Console.WriteLine(matrix3.AdjointMatrix());
             //Console.WriteLine(matrix1 * 5);
             //Console.WriteLine(matrix2.ReversedMatrix());

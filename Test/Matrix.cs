@@ -538,8 +538,8 @@ namespace Test
         /// <returns>Матрица, сопряженная к исходной</returns>
         public SquareMatrix AdjointMatrix()
         {
-            Matrix cofactored = new Matrix();
             int size = matrix.GetLength(0);
+            Matrix cofactored = new Matrix(size);
 
             for (int row = 0; row < size; row++)
                 for (int col = 0; col < size; col++)

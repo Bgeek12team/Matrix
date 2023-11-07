@@ -394,13 +394,130 @@ namespace Test.Tests
             Assert.AreEqual(matrixRes, matrix1.MultiplyMatrx(scalar));
         }
         /// <summary>
+        /// Тест проверяющий вычисление минора матрицы по заданным индексам(3x3)
+        /// </summary>
+        [TestMethod()]
+        public void GetMinorTest()
+        {
+            double[,] m1 = {
+                {-10, 25, 10},
+                {15, 11, 17},
+                {99, 33, 33},
+            };
+
+            double[,] mRes = { 
+                {11, 17},
+                {33,33 }                
+            };
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            SquareMatrix resMatrix = new SquareMatrix(mRes);
+
+            Assert.AreEqual(resMatrix, matrix1.GetMinor(0,0));
+        }
+        /// <summary>
+        /// Тест проверяющий вычисление минора матрицы по заданным индексам(3x3)
+        /// </summary>
+        [TestMethod()]
+        public void GetMinorCenter()
+        {
+            double[,] m1 = {
+                {-10, 25, 10},
+                {15, 11, 17},
+                {99, 33, 33},
+            };
+
+            double[,] mRes = {
+                {-10, 10},
+                {99,33 }
+            };
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            SquareMatrix resMatrix = new SquareMatrix(mRes);
+
+            Assert.AreEqual(resMatrix, matrix1.GetMinor(1, 1));
+        }
+        /// <summary>
+        /// Тест проверяющий вычисление минора матрицы по заданным индексам(3x3)
+        /// </summary>
+        [TestMethod()]
+        public void GetMinorRight()
+        {
+            double[,] m1 = {
+                {-10, 25, 10},
+                {15, 11, 17},
+                {99, 33, 33},
+            };
+
+            double[,] mRes = {
+                {-10, 25},
+                {99,33 }
+            };
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            SquareMatrix resMatrix = new SquareMatrix(mRes);
+
+            Assert.AreEqual(resMatrix, matrix1.GetMinor(1, 2));
+        }
+        /// <summary>
+        /// Тест проверяющий вычисление минора матрицы по заданным индексам(4x4)
+        /// </summary>
+        [TestMethod()]
+        public void GetMinorUnSimmetrick()
+        {
+            double[,] m1 = {
+                {-10, 25, 10, 55},
+                {15, 11, 17, 99},
+                {99, 33, 33,88},
+                {77, 44, 44,77},
+
+            };
+            double[,] mRes = {
+                {-10, 25, 55},
+                {99,33,88 },
+                {77,44,77 }
+            };
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            SquareMatrix resMatrix = new SquareMatrix(mRes);
+
+            Assert.AreEqual(resMatrix, matrix1.GetMinor(1, 2));
+        }
+        /// <summary>
+        /// Тест проверяющий вычисление минора матрицы по заданным индексам(4x4)
+        /// </summary>
+        [TestMethod()]
+        public void GetAdjointMatrix()
+        {
+            double[,] m1 = {
+                {-1, 2, 1, 5},
+                {5, 1, 7, 9},
+                {9, 3, 3,8},
+                {7, 4, 4,7},
+
+            };
+            double[,] mRes = {
+                {66, 11, -65,13},
+                {-31,79,130,-228 },
+                {73,-72,150,-131 },
+                {-90,-15,-95, 120 }
+
+            };
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            SquareMatrix resMatrix = new SquareMatrix(mRes);
+
+            Assert.AreEqual(resMatrix, matrix1.AdjointMatrix());
+        }
+
+        /// <summary>
         /// Перемножает матрицы состоящие из одного элемента
         /// </summary>
         [TestMethod()]
         public void MultiplyMatrxWithOneElement()
         {
             double[,] m1 = {
-                {57},
+                {57,},
             };
             double[,] m2 = {
                 {11 },
@@ -415,6 +532,7 @@ namespace Test.Tests
             Matrix matrixRes = new Matrix(mRes);
             Assert.AreEqual(matrixRes, matrix1.MultiplyMatrx(matrix2));
         }
+
 
     }
 }
