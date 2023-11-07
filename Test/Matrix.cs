@@ -176,6 +176,24 @@ namespace Test
             return mat;
         }
         /// <summary>
+        /// Увеличивает все элементы текущей матрицы на константу
+        /// /// </summary>
+        /// <param name="matrix">
+        /// Складываемая матрица
+        /// </param>
+        /// <returns>Матрица - сумма текущей матрицы с константой/returns>
+        public Matrix AddMatrixWithConst(double value)
+        {
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                for (int j = 0; j < AmountOfRows; j++)
+                {
+                    matrix[i,j] += value;
+                }
+            }
+            return new Matrix(matrix);
+        }
+        /// <summary>
         /// Вычитает из текущей матрицы данную, если это возможно
         /// </summary>
         /// <param name="matrix">Вычитаемая матрица</param>
