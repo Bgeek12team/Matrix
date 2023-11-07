@@ -525,7 +525,7 @@ namespace Test
 
             for (int row = 0; row < size; row++)
                 for (int col = 0; col < size; col++)
-                    cofactored[row, col] = Math.Pow(-1, row + col) * GetMinor(row, col).Determinant();
+                    cofactored[row, col] = Math.Pow(-1, row + col + 2) * GetMinor(row, col).Determinant();
 
             return new SquareMatrix(cofactored.Transpose());
         }
@@ -538,19 +538,28 @@ namespace Test
         /// <returns>матрица-минор</returns>
         public SquareMatrix GetMinor(int i, int j)
         {
-            SquareMatrix minor = new SquareMatrix();
-            List <double> elems = new List <double>();
+
             int size = matrix.GetLength(0);
-
+            SquareMatrix minor = new SquareMatrix(size - 1);
+            int minorRow = 0;
             for (int row = 0; row < size; row++)
-                for (int col = 0; col < size; col++)
-                    if (col != j && row != i)
-                        elems.Add(matrix[row, col]);
+            {
+                if (row == i)
+                    continue;
 
-            for (int row = 0; row < size; row++)
+                int minorCol = 0;
                 for (int col = 0; col < size; col++)
-                    foreach (double elem in elems)
-                        minor[row, col] = elem;
+                {
+                    if (col == j)
+                        continue;
+
+                    minor[minorRow, minorCol] = matrix[row, col];
+                    minorCol++;
+                }
+
+                minorRow++;
+            }
+
             return minor;
         }
         /// <summary>

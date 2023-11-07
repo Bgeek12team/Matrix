@@ -24,11 +24,17 @@ namespace P
                 {12, 8, 65, 34 },
                 {10, 1, 30, 31 },
             };
-
+            double[,] m4 = {
+                {-2, 4.5, 14 },
+                {25, 0, -1 },
+                {-10.5, 4, 1.5 }
+            };
             Matrix matrix1 = new Matrix(m1);
             SquareMatrix matrix2 = new SquareMatrix(m2);
 
-            Console.WriteLine(matrix1 * 5);
+            SquareMatrix matrix3 = new SquareMatrix(m4);
+            Console.WriteLine(matrix3.AdjointMatrix());
+            //Console.WriteLine(matrix1 * 5);
             //Console.WriteLine(matrix2.ReversedMatrix());
         }
     }
