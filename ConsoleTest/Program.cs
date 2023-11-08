@@ -27,16 +27,25 @@ namespace P
             };
             double[,] m4 = {
                 {-2, 4.5, 14 },
-                {25, 0, -1 },
+                {25, 0, -1},
+                {-10.5, 4, 1.5 },
+                {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            Matrix matrix1 = new Matrix(m1);
+            SquareMatrix matrix1 = new SquareMatrix(m1);
             SquareMatrix matrix2 = new SquareMatrix(m2);
 
-            SquareMatrix matrix3 = new SquareMatrix(m1);
-            Console.WriteLine(matrix3.AdjointMatrix());
-            //Console.WriteLine(matrix1 * 5);
-            //Console.WriteLine(matrix2.ReversedMatrix());
+            
+            SquareMatrix factInverse = new SquareMatrix(matrix1.ReversedMatrix());
+            Console.WriteLine(factInverse);
+            
+            Console.WriteLine(matrix1 * factInverse);
+
+            foreach (var root in matrix1.GetRoots(new double[] { 1, 1, 1, 1 }))
+                Console.WriteLine(root);
+
+            Console.WriteLine(matrix1 * 5);
+            Console.WriteLine(matrix2.ReversedMatrix());
         }
     }
 }
