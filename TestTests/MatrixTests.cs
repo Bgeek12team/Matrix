@@ -509,7 +509,58 @@ namespace Test.Tests
 
             Assert.AreEqual(resMatrix, matrix1.AdjointMatrix());
         }
+        /// <summary>
+        /// Тест на вычисление детерминанта матрицы 3х3
+        /// </summary>
+        [TestMethod()]
+        public void GetDeterminant()
+        {
+            double[,] m1 = {
+                {3, 1, 5},
+                {2, 4, 6},
+                {7, 8, 9},
+            };
+            double mRes = -72;
 
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+
+            Assert.AreEqual(mRes, matrix1.Determinant());
+        }
+        /// <summary>
+        /// Тест на вычисление детерминанта нулевой матрицы
+        /// </summary>
+        [TestMethod()]
+        public void GetDeterminantZeros()
+        {
+            double[,] m1 = {
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},
+                {0, 0, 0, 0},          
+            };
+            double mRes = 0;
+
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+
+            Assert.AreEqual(mRes, matrix1.Determinant());
+        }
+        /// <summary>
+        /// Тест на вычисление детерминанта матрицы с отрицательными значениями
+        /// </summary>
+        [TestMethod()]
+        public void GetDeterminantNegatives()
+        {
+            double[,] m1 = {
+                {-10, -71, -11, -21,-33},
+                {-13, -31, -22, -21,-43},
+                {-10, -71, -11, -21,-33},
+                {-34, -91, -61, -41,-22},
+                {-10, -71, -11, -21,-33},
+            };
+            double mRes = 0;
+            SquareMatrix matrix1 = new SquareMatrix(m1);
+            Assert.AreEqual(mRes, matrix1.Determinant());
+        }
         /// <summary>
         /// Перемножает матрицы состоящие из одного элемента
         /// </summary>
