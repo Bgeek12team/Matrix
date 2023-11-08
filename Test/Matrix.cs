@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
+using System.Numerics;
 using System.Reflection;
 using System.Text;
 
@@ -9,9 +11,9 @@ namespace Test
     /// Класс, позволяющий осуществлять работу с типом данных Матрица,
     /// хранящим числа в виде двумерного массива
     /// </summary>
-    public class Matrix
+    public class Matrix 
     {
-        protected const int PAD_MARGIN = 3;
+        protected const int PAD_MARGIN = 5;
         /// <summary>
         /// Поле, отображающее максимальную длину матрицы в одном измерении,
         /// при котором она будет выводиться полностью
@@ -76,7 +78,7 @@ namespace Test
         {
             this.amountOfCols = amountOfCols;
             this.amountOfRows = amountOfRows;
-            this.matrix = new double[amountOfRows, amountOfCols];
+            this.matrix = new double[amountOfCols, amountOfRows];
         }
         /// <summary>
         /// Возвращает длину матрицы по горизонтали
@@ -96,10 +98,15 @@ namespace Test
         /// Возвращает длину матрицы по вертикали
         /// </summary>
         /// <returns>Длина матрицы по вертикали, т.е.
-        /// количество строк</returns>
+        /// количество строк</returns>ё
         public int AmountOfRows
         {
             get { return amountOfRows; }
+        }
+
+        public double[,] GetMatrix
+        {
+            get { return matrix; }
         }
         /// <summary>
         /// Возвращает элемент по заданной строке и столбцу
@@ -170,6 +177,24 @@ namespace Test
             return mat;
         }
         /// <summary>
+        /// Увеличивает все элементы текущей матрицы на константу
+        /// /// </summary>
+        /// <param name="value">
+        /// Складываемая матрица
+        /// </param>
+        /// <returns>Матрица - сумма текущей матрицы с константой/returns>
+        public Matrix AddMatrixWithConst(double value)
+        {
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                for (int j = 0; j < AmountOfRows; j++)
+                {
+                    matrix[i,j] += value;
+                }
+            }
+            return new Matrix(matrix);
+        }
+        /// <summary>
         /// Вычитает из текущей матрицы данную, если это возможно
         /// </summary>
         /// <param name="matrix">Вычитаемая матрица</param>
@@ -211,25 +236,30 @@ namespace Test
         /// </exception>
         public Matrix MultiplyMatrx(Matrix matrix)
         {
-            if (matrix.AmountOfRows != this.AmountOfRows)
-                throw new ArgumentException("Матрицы несовместимы, умножение невозможно!");
+            int rows1 = this.amountOfCols;
+            int cols1 = this.AmountOfRows;
+            int rows2 = matrix.amountOfCols;
+            int cols2 = matrix.AmountOfRows;
 
-            Matrix res = new Matrix(this.AmountOfCols ,matrix.AmountOfRows);
-
-            for (int i = 0; i < res.AmountOfRows; i++)
+            if (cols1 != rows2)
             {
-                for (int j = 0; j < res.AmountOfCols; j++)
+                throw new ArgumentException("Умножение невозможно");
+            }
+
+            double[,] result = new double[rows1, cols2];
+
+            for (int i = 0; i < rows1; i++)
+            {
+                for (int j = 0; j < cols2; j++)
                 {
-                    double sum = 0;
-                    for (int r = 0; r < this.AmountOfCols; r++)
+                    for (int k = 0; k < cols1; k++)
                     {
-                        sum += this.matrix[i, r] * matrix.GetElem(r, j);
+                        result[i, j] += this[i, k] * matrix[k, j];
                     }
-                    res.SetElem(i, j, sum);
                 }
             }
 
-            return res;
+            return new(result);
         }
         /// <summary>
         /// Умножает текущую матрицу на скаляр
@@ -250,6 +280,21 @@ namespace Test
             }
 
             return mat;
+        }
+
+        public Matrix Transpose()
+        {
+            double[,] result = new double[amountOfRows, amountOfCols];
+
+            for (int i = 0; i < amountOfCols; i++)
+            {
+                for (int j = 0; j < amountOfRows; j++)
+                {
+                    result[j, i] = matrix[i, j];
+                }
+            }
+
+            return new(result);
         }
 
         /// <summary>
@@ -447,6 +492,15 @@ namespace Test
             this.amountOfRows = matrix.GetLength(0);
             this.amountOfCols = this.amountOfRows;
         }
+        public SquareMatrix(Matrix matrix)
+        {
+            if (matrix.AmountOfCols != matrix.AmountOfRows)
+                throw new ArgumentException("Массив должен быть квадратным");
+
+            this.matrix = matrix.GetMatrix;
+            this.amountOfRows = matrix.AmountOfRows;
+            this.amountOfCols = this.amountOfRows;
+        }
         /// <summary>
         /// Конструктор, создающий новую пустую квадратную
         /// матрицу данного размера
@@ -459,7 +513,78 @@ namespace Test
         /// <returns>Детерминант текущей матрицы</returns>
         public double Determinant()
         {
-            return default;
+            return Determinant(this.GetMatrix);
+        }
+        public static double Determinant(double[,] matrix)
+        {
+            if (matrix.GetLength(0) == 1)
+                return matrix[0, 0];
+            double det = 0;
+            int size = matrix.GetLength(0);
+            int rowToExclude = 0;// Строка которую исключаем
+            for (int col = 0; col < size; col++)
+            {
+                var tMatrix = new double[size - 1, size - 1];//Под матрица для вычисления минора
+                for (int tRow = 0; tRow < size - 1; tRow++)
+                {
+                    for (int tCol = 0; tCol < size - 1; tCol++)
+                    {
+                        int OriginalRow = (tRow < rowToExclude) ? tRow : tRow + 1;
+                        int subMatrix = (tCol < col) ? tCol : tCol + 1;
+                        tMatrix[tRow, tCol] = matrix[OriginalRow, subMatrix];
+                    }
+                }
+                det += Determinant(tMatrix) * matrix[rowToExclude, col] * (((rowToExclude + col) % 2 == 0) ? 1 : -1);
+            }
+            return det;
+        }
+        /// <summary>
+        /// Возвращает матрицу, сопряженную к исходной
+        /// </summary>
+        /// <returns>Матрица, сопряженная к исходной</returns>
+        public SquareMatrix AdjointMatrix()
+        {
+            int size = matrix.GetLength(0);
+            Matrix cofactored = new Matrix(size);
+
+            for (int row = 0; row < size; row++)
+                for (int col = 0; col < size; col++)
+                    cofactored[row, col] = (int)Math.Pow(-1, row + col) * GetMinor(row, col).Determinant();
+
+            return new SquareMatrix(cofactored.Transpose());
+        }
+        /// <summary>
+        /// Возвращает минор матрицы элемента,
+        /// стоящем в i-ой строке и в j-ом столбце
+        /// </summary>
+        /// <param name="i">номер строки</param>
+        /// <param name="j">номер столбца</param>
+        /// <returns>матрица-минор</returns>
+        public SquareMatrix GetMinor(int i, int j)
+        {
+
+            int size = matrix.GetLength(0);
+            SquareMatrix minor = new SquareMatrix(size - 1);
+            int minorRow = 0;
+            for (int row = 0; row < size; row++)
+            {
+                if (row == i)
+                    continue;
+
+                int minorCol = 0;
+                for (int col = 0; col < size; col++)
+                {
+                    if (col == j)
+                        continue;
+
+                    minor[minorRow, minorCol] = matrix[row, col];
+                    minorCol++;
+                }
+
+                minorRow++;
+            }
+
+            return minor;
         }
         /// <summary>
         /// Возвращает матрицу, обратную к данной
@@ -467,8 +592,14 @@ namespace Test
         /// <returns>Матрица, обратная к данной</returns>
         public SquareMatrix ReversedMatrix()
         {
-            return default;
+            double det = this.Determinant();
+            if (det == 0)
+                throw new ArgumentException("Определитель равен нулю, обратной матрицы не существует!");
+
+            SquareMatrix transposed = new(this.AdjointMatrix());
+            return new SquareMatrix(transposed * (1/det));
         }
+        
         /// <summary>
         /// Принимая значения матрицы за коэфициент при независимой переменной,
         /// имеющей степень номера столбца, начиная с нуля, и порядковый номер строки,
@@ -483,7 +614,23 @@ namespace Test
         /// для i-той независимой переменной</returns>
         public double[] GetRoots(double[] freeCoefs)
         {
-            return default;
+            SquareMatrix inverted = this.ReversedMatrix();
+
+            double[,] tmp = new double[ freeCoefs.Length , 1];
+            
+            for (int i = 0; i < freeCoefs.Length; i++)
+            {
+                tmp[i, 0] = freeCoefs[i];
+            }
+
+            Matrix freeCoefsMatrix = new Matrix(tmp);
+            Matrix res = inverted * freeCoefsMatrix;
+            double[] result = new double[freeCoefs.Length];
+            for (int i = 0; i < freeCoefs.Length; i++)
+            {
+                result[i] = res[i , 0];
+            }
+            return result;
         }
     }
 }
