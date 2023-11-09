@@ -101,6 +101,7 @@
             this.buttonMultMatrx.TabIndex = 3;
             this.buttonMultMatrx.Text = "Произведение двух матриц";
             this.buttonMultMatrx.UseVisualStyleBackColor = true;
+            this.buttonMultMatrx.Click += new System.EventHandler(this.buttonMultMatrx_Click);
             // 
             // buttonSub
             // 

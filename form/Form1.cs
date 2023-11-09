@@ -34,10 +34,6 @@ namespace form
         {
             
         }
-        public static void changeForm((int, int) dimens)
-        {
-           
-        }
 
         private void changeDefaultMatrix_Click(object sender, EventArgs e)
         {
@@ -145,7 +141,36 @@ namespace form
 
         private void buttonSub_Click(object sender, EventArgs e)
         {
+            if (chekOccupancy(exMatrix.txBx) && chekOccupancy(deffMatrix.txBx) && deffMatrix.dimension == exMatrix.dimension)
+            {
+                if (resMActivity == true)
+                    resMatrix.getObjectMatrix().Dispose();
+                var defaultMatrix = new Matrix(deffMatrix.getMatrix());
+                var extraMatrix = new Matrix(exMatrix.getMatrix());
+                Matrix tRes;
+                tRes = defaultMatrix - extraMatrix;
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                Controls.Add(resMatrix.createMtrx());
+                resMActivity = true;
+            }
+            else { MessageBox.Show("Невозможно подсчитать разность!"); }
+        }
 
+        private void buttonMultMatrx_Click(object sender, EventArgs e)
+        {
+            if (chekOccupancy(exMatrix.txBx) && chekOccupancy(deffMatrix.txBx) && deffMatrix.dimension.Item1 == exMatrix.dimension.Item2)
+            {
+                if (resMActivity == true)
+                    resMatrix.getObjectMatrix().Dispose();
+                var defaultMatrix = new Matrix(deffMatrix.getMatrix());
+                var extraMatrix = new Matrix(exMatrix.getMatrix());
+                Matrix tRes;
+                tRes = defaultMatrix * extraMatrix;
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                Controls.Add(resMatrix.createMtrx());
+                resMActivity = true;
+            }
+            else { MessageBox.Show("Невозможно подсчитать разность!"); }
         }
     }
     class resultMatrix : mtrx
@@ -168,7 +193,7 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (5, 15);
-            gBSize = ((dimension.Item2 > 3) ? 120 + (35 * (dimension.Item2 - 3)) : 120, 35 * dimension.Item1 + 50);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
             this.locYDeffMatrix = locYDeffMatrix;
         }
         public override Control createMtrx()
@@ -182,12 +207,12 @@ namespace form
                 {
                     txBx[i, j] = new TextBox()
                     {
-                        Font = new Font("Times New Roman", 14, FontStyle.Bold),
-                        Size = new Size(29, 29),
+                        Font = new Font("Times New Roman", 18, FontStyle.Bold),
+                        Size = new Size(40, 40),
                         Location = new System.Drawing.Point(loc.x, loc.y),
                         Text = mtrx[i, j].ToString(),
                     };
-                    loc.x += 35;
+                    loc.x += 45;
                     gB.Controls.Add(txBx[i, j]);
                 }
                 loc.y += 40;
@@ -218,7 +243,7 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (5, 15);
-            gBSize = ((dimension.Item2 > 3) ? 120 + (35 * (dimension.Item2 - 3)) : 120, 35 * dimension.Item1 + 50);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
             this.locYDeffMatrix = locYDeffMatrix;
             
         }
@@ -234,14 +259,14 @@ namespace form
                     txBx[i, j] = new TextBox()
                     {
                         Font = new Font("Times New Roman",
-                    14, FontStyle.Bold),
-                        Size = new Size(29, 29),
+                    18, FontStyle.Bold),
+                        Size = new Size(40, 40),
                         Location = new System.Drawing.Point(loc.x, loc.y)
                     };
-                    loc.x += 35;
+                    loc.x += 45;
                     gB.Controls.Add(txBx[i, j]);
                 }
-                loc.y += 40;
+                loc.y += 45;
                 loc.x = 5;
             }
             return gB;
@@ -264,7 +289,7 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (5, 15);
-            gBSize = ((dimension.Item2 > 3) ? 120 + (35 * (dimension.Item2 - 3)) : 120, 35 * dimension.Item1 + 50);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
         }
         public override GroupBox createMtrx()
         {
@@ -277,13 +302,13 @@ namespace form
                 {
                     txBx[i,j] = new TextBox() 
                     { Font = new Font("Times New Roman", 
-                    14, FontStyle.Bold), 
-                    Size = new Size(29, 29), 
+                    18, FontStyle.Bold), 
+                    Size = new Size(40, 40), 
                     Location = new System.Drawing.Point(loc.x, loc.y) };
-                    loc.Item1 += 35;
+                    loc.Item1 += 45;
                     gB.Controls.Add(txBx[i,j]);
                 }
-                loc.y += 40;
+                loc.y += 45;
                 loc.x = 5;
             }
             return gB;
