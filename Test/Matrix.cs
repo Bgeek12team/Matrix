@@ -477,6 +477,7 @@ namespace Test
     /// </summary>
     public class SquareMatrix : Matrix
     {
+        private double? _det = null;
         /// <summary>
         /// Конструктор, создающий матрицу 3х3, заполненную пустыми элементами
         /// </summary>
@@ -529,7 +530,9 @@ namespace Test
         /// <returns>Детерминант текущей матрицы</returns>
         public double Determinant()
         {
-            return Determinant(this.GetMatrix);
+            if (this._det == null)
+                this._det = Determinant(this.GetMatrix);
+            return (double)_det;
         }
         /// <summary>
         /// Рекурсивно находит определитель матрицы, соответсвующкй данному массиву
@@ -538,26 +541,29 @@ namespace Test
         /// <returns>Определитель матрицы, соответсвующкй данному массиву</returns>
         private static double Determinant(double[,] matrix)
         {
-            if (matrix.GetLength(0) == 1)
-                return matrix[0, 0];
-            double det = 0;
-            int size = matrix.GetLength(0);
-            int rowToExclude = 0;// Строка которую исключаем
-            for (int col = 0; col < size; col++)
+            double[,] clone = (double[,])matrix.Clone();
+            double res = 1;
+            for (int i = 0; i < clone.GetLength(0) - 1; i++)
             {
-                var tMatrix = new double[size - 1, size - 1];//Под матрица для вычисления минора
-                for (int tRow = 0; tRow < size - 1; tRow++)
+                
+                for (int r = i + 1; r < clone.GetLength(0); r++)
                 {
-                    for (int tCol = 0; tCol < size - 1; tCol++)
+                    if (clone[r, i] == 0)
+                            continue;
+                    double koef = clone[i, i]/clone[r, i];
+                    for (int j = i; j < clone.GetLength(0); j++)
                     {
-                        int OriginalRow = (tRow < rowToExclude) ? tRow : tRow + 1;
-                        int subMatrix = (tCol < col) ? tCol : tCol + 1;
-                        tMatrix[tRow, tCol] = matrix[OriginalRow, subMatrix];
+                        clone[r, j] *= koef;
+                        clone[r, j] -= clone[i, j];
                     }
                 }
-                det += Determinant(tMatrix) * matrix[rowToExclude, col] * (((rowToExclude + col) % 2 == 0) ? 1 : -1);
+                res *= clone[i, i];
+                if (res == 0)
+                    return 0;
             }
-            return det;
+            res *= clone[clone.GetLength(0) - 1, clone.GetLength(1) - 1];
+            Console.WriteLine(new Matrix(clone));
+            return res;
         }
         /// <summary>
         /// Возвращает матрицу, сопряженную к исходной

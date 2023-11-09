@@ -32,20 +32,30 @@ namespace P
                 {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            SquareMatrix matrix1 = new SquareMatrix(m1);
-            SquareMatrix matrix2 = new SquareMatrix(m2);
+
+            SquareMatrix squareMatrix = new(m2);
+            Console.WriteLine(squareMatrix.Determinant());
+
+            //Matrix bigg = Matrix.GenerateRandomMatrix(9, 9, 1, 1000);
+            //SquareMatrix big = new(bigg);
+            //big = big.ReversedMatrix();
+            //Console.WriteLine(bigg);
+            //Console.WriteLine(big);
+
+            //SquareMatrix matrix1 = new SquareMatrix(m1);
+            //SquareMatrix matrix2 = new SquareMatrix(m2);
 
             
-            SquareMatrix factInverse = new SquareMatrix(matrix1.ReversedMatrix());
-            Console.WriteLine(factInverse);
+            //SquareMatrix factInverse = new SquareMatrix(matrix1.ReversedMatrix());
+            //Console.WriteLine(factInverse);
             
-            Console.WriteLine(matrix1 * factInverse);
+            //Console.WriteLine(matrix1 * factInverse);
 
-            foreach (var root in matrix1.GetRoots(new double[] { 1, 1, 1, 1 }))
-                Console.WriteLine(root);
+            //foreach (var root in matrix1.GetRoots(new double[] { 1, 1, 1, 1 }))
+            //    Console.WriteLine(root);
 
-            Console.WriteLine(matrix1 * 5);
-            Console.WriteLine(matrix2.ReversedMatrix());
+            //Console.WriteLine(matrix1 * 5);
+            //Console.WriteLine(matrix2.ReversedMatrix());
         }
     }
 }
