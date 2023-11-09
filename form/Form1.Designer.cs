@@ -28,28 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.changeDefaultMatrix = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
+            this.buttonSlay = new System.Windows.Forms.Button();
+            this.buttonMultNumb = new System.Windows.Forms.Button();
+            this.buttonMultMatrx = new System.Windows.Forms.Button();
+            this.buttonSub = new System.Windows.Forms.Button();
+            this.buttonAdd = new System.Windows.Forms.Button();
+            this.buttonGetRevMatrx = new System.Windows.Forms.Button();
             this.createNewMatrix = new System.Windows.Forms.Button();
             this.delExtrMatrix = new System.Windows.Forms.Button();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.changeDefaultMatrix);
-            this.groupBox1.Controls.Add(this.button8);
-            this.groupBox1.Controls.Add(this.button7);
-            this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Controls.Add(this.button5);
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Controls.Add(this.button3);
+            this.groupBox1.Controls.Add(this.buttonSlay);
+            this.groupBox1.Controls.Add(this.buttonMultNumb);
+            this.groupBox1.Controls.Add(this.buttonMultMatrx);
+            this.groupBox1.Controls.Add(this.buttonSub);
+            this.groupBox1.Controls.Add(this.buttonAdd);
+            this.groupBox1.Controls.Add(this.buttonGetRevMatrx);
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(200, 441);
@@ -68,71 +71,68 @@
             this.changeDefaultMatrix.UseVisualStyleBackColor = true;
             this.changeDefaultMatrix.Click += new System.EventHandler(this.changeDefaultMatrix_Click);
             // 
-            // button8
+            // buttonSlay
             // 
-            this.button8.Enabled = false;
-            this.button8.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button8.Location = new System.Drawing.Point(6, 306);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(188, 35);
-            this.button8.TabIndex = 5;
-            this.button8.Text = "СЛАУ";
-            this.button8.UseVisualStyleBackColor = true;
-            this.button8.Click += new System.EventHandler(this.button8_Click);
+            this.buttonSlay.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonSlay.Location = new System.Drawing.Point(6, 306);
+            this.buttonSlay.Name = "buttonSlay";
+            this.buttonSlay.Size = new System.Drawing.Size(188, 35);
+            this.buttonSlay.TabIndex = 5;
+            this.buttonSlay.Text = "СЛАУ";
+            this.buttonSlay.UseVisualStyleBackColor = true;
+            this.buttonSlay.Click += new System.EventHandler(this.button8_Click);
             // 
-            // button7
+            // buttonMultNumb
             // 
-            this.button7.Enabled = false;
-            this.button7.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button7.Location = new System.Drawing.Point(6, 240);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(188, 60);
-            this.button7.TabIndex = 4;
-            this.button7.Text = "Произведение матрицы на число";
-            this.button7.UseVisualStyleBackColor = true;
+            this.buttonMultNumb.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonMultNumb.Location = new System.Drawing.Point(6, 240);
+            this.buttonMultNumb.Name = "buttonMultNumb";
+            this.buttonMultNumb.Size = new System.Drawing.Size(188, 60);
+            this.buttonMultNumb.TabIndex = 4;
+            this.buttonMultNumb.Text = "Произведение матрицы на число";
+            this.buttonMultNumb.UseVisualStyleBackColor = true;
             // 
-            // button6
+            // buttonMultMatrx
             // 
-            this.button6.Enabled = false;
-            this.button6.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button6.Location = new System.Drawing.Point(6, 174);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(188, 60);
-            this.button6.TabIndex = 3;
-            this.button6.Text = "Произведение двух матриц";
-            this.button6.UseVisualStyleBackColor = true;
+            this.buttonMultMatrx.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonMultMatrx.Location = new System.Drawing.Point(6, 174);
+            this.buttonMultMatrx.Name = "buttonMultMatrx";
+            this.buttonMultMatrx.Size = new System.Drawing.Size(188, 60);
+            this.buttonMultMatrx.TabIndex = 3;
+            this.buttonMultMatrx.Text = "Произведение двух матриц";
+            this.buttonMultMatrx.UseVisualStyleBackColor = true;
             // 
-            // button5
+            // buttonSub
             // 
-            this.button5.Enabled = false;
-            this.button5.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button5.Location = new System.Drawing.Point(6, 133);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(188, 35);
-            this.button5.TabIndex = 2;
-            this.button5.Text = "Разность";
-            this.button5.UseVisualStyleBackColor = true;
+            this.buttonSub.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonSub.Location = new System.Drawing.Point(6, 133);
+            this.buttonSub.Name = "buttonSub";
+            this.buttonSub.Size = new System.Drawing.Size(188, 35);
+            this.buttonSub.TabIndex = 2;
+            this.buttonSub.Text = "Разность";
+            this.buttonSub.UseVisualStyleBackColor = true;
+            this.buttonSub.Click += new System.EventHandler(this.buttonSub_Click);
             // 
-            // button4
+            // buttonAdd
             // 
-            this.button4.Enabled = false;
-            this.button4.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button4.Location = new System.Drawing.Point(6, 92);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(188, 35);
-            this.button4.TabIndex = 1;
-            this.button4.Text = "Сложение";
-            this.button4.UseVisualStyleBackColor = true;
+            this.buttonAdd.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonAdd.Location = new System.Drawing.Point(6, 92);
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size(188, 35);
+            this.buttonAdd.TabIndex = 1;
+            this.buttonAdd.Text = "Сложение";
+            this.buttonAdd.UseVisualStyleBackColor = true;
+            this.buttonAdd.Click += new System.EventHandler(this.buttonAdd_Click);
             // 
-            // button3
+            // buttonGetRevMatrx
             // 
-            this.button3.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.button3.Location = new System.Drawing.Point(6, 22);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(188, 64);
-            this.button3.TabIndex = 0;
-            this.button3.Text = "Получить обратную матрицу";
-            this.button3.UseVisualStyleBackColor = true;
+            this.buttonGetRevMatrx.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.buttonGetRevMatrx.Location = new System.Drawing.Point(6, 22);
+            this.buttonGetRevMatrx.Name = "buttonGetRevMatrx";
+            this.buttonGetRevMatrx.Size = new System.Drawing.Size(188, 64);
+            this.buttonGetRevMatrx.TabIndex = 0;
+            this.buttonGetRevMatrx.Text = "Получить обратную матрицу";
+            this.buttonGetRevMatrx.UseVisualStyleBackColor = true;
             // 
             // createNewMatrix
             // 
@@ -157,6 +157,10 @@
             this.delExtrMatrix.Visible = false;
             this.delExtrMatrix.Click += new System.EventHandler(this.delExtrMatrix_Click);
             // 
+            // errorProvider1
+            // 
+            this.errorProvider1.ContainerControl = this;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -169,20 +173,22 @@
             this.Text = "Матрицы";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
         private GroupBox groupBox1;
-        private Button button3;
-        private Button button8;
-        private Button button7;
-        private Button button6;
-        private Button button5;
-        private Button button4;
+        private Button buttonGetRevMatrx;
+        private Button buttonSlay;
+        private Button buttonMultNumb;
+        private Button buttonMultMatrx;
+        private Button buttonSub;
+        private Button buttonAdd;
         private Button createNewMatrix;
         private Button changeDefaultMatrix;
         private Button delExtrMatrix;
+        private ErrorProvider errorProvider1;
     }
 }
