@@ -89,6 +89,12 @@ namespace Test
         {
             get { return amountOfCols; }
         }
+        /// <summary>
+        /// Возвращает элемент по заданной строке и столбцу
+        /// </summary>
+        /// <param name="row">Заданная строка</param>
+        /// <param name="col">Заданный столбец</param>
+        /// <returns>Элемент, имеющий координаты [строка; столбец]</returns>
         public double this[int row, int col]
         {
             get { return matrix[row, col]; }
@@ -103,7 +109,9 @@ namespace Test
         {
             get { return amountOfRows; }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public double[,] GetMatrix
         {
             get { return matrix; }
@@ -492,6 +500,14 @@ namespace Test
             this.amountOfRows = matrix.GetLength(0);
             this.amountOfCols = this.amountOfRows;
         }
+        /// <summary>
+        /// Конструктор, приводящий произвольную матрицу к квадртаной, если это возможно
+        /// </summary>
+        /// <param name="matrix">Матрица измерения которой совпадают</param>
+        /// <exception cref="ArgumentException">
+        /// Исключение, возникающее в случае, если измерения Матрицы
+        /// не совпадают
+        /// </exception>
         public SquareMatrix(Matrix matrix)
         {
             if (matrix.AmountOfCols != matrix.AmountOfRows)
@@ -515,7 +531,12 @@ namespace Test
         {
             return Determinant(this.GetMatrix);
         }
-        public static double Determinant(double[,] matrix)
+        /// <summary>
+        /// Рекурсивно находит определитель матрицы, соответсвующкй данному массиву
+        /// </summary>
+        /// <param name="matrix">Массив</param>
+        /// <returns>Определитель матрицы, соответсвующкй данному массиву</returns>
+        private static double Determinant(double[,] matrix)
         {
             if (matrix.GetLength(0) == 1)
                 return matrix[0, 0];
@@ -602,9 +623,9 @@ namespace Test
         
         /// <summary>
         /// Принимая значения матрицы за коэфициент при независимой переменной,
-        /// имеющей степень номера столбца, начиная с нуля, и порядковый номер строки,
+        /// имеющей порядковый номер столбца, начиная с нуля,
         /// а также массив свободных коэфициентов, где каждому i-тому элементу 
-        /// соответсвует коэфициент для i-той переменной, 
+        /// соответсвует коэфициент для i-той строки, 
         /// решает получившуются систему линейных алгебраических уравнений
         /// </summary>
         /// <param name="freeCoefs">Массив свободных коэфициентов, где каждому i-тому элементу 
