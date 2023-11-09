@@ -348,14 +348,16 @@ namespace form
             this.dimension = dimension;
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
-            loc = (5, 15);
+            loc = (5, 30);
             gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
         }
         public override GroupBox createMtrx()
         {
             int countElement = dimension.Item1 * dimension.Item2;
             
-            gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height), Location = new System.Drawing.Point(220, 12), Text = "Стандартная матрица" };
+            gB = new GroupBox() { 
+                Size = new Size(gBSize.width, gBSize.height)
+                , Location = new System.Drawing.Point(280, 10), Text = "Стандартная матрица" };
             for (int i = 0; i < dimension.Item1; i++)
             {
                 for (int j = 0; j < dimension.Item2; j++)
