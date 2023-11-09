@@ -34,7 +34,7 @@ namespace P
             SquareMatrix matrix2 = new SquareMatrix(m2);
 
             SquareMatrix matrix3 = new SquareMatrix(m1);
-            Console.WriteLine(matrix3.AdjointMatrix());
+            //Console.WriteLine(matrix3.AdjointMatrix());
             //Console.WriteLine(matrix1 * 5);
             //Console.WriteLine(matrix2.ReversedMatrix());
         }
