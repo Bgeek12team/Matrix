@@ -1,5 +1,6 @@
 using Microsoft.VisualBasic.Logging;
 using System.Drawing;
+using System.Drawing.Text;
 using Test;
 
 namespace form
@@ -33,6 +34,26 @@ namespace form
         private void button8_Click(object sender, EventArgs e)
         {
             
+            if (chekOccupancy(exMatrix.txBx) && chekOccupancy(deffMatrix.txBx) && exMatrix.dimension.Item2 == 1 && exMatrix.dimension.Item1 == deffMatrix.dimension.Item1 && deffMatrix.squareMatrix)
+            {
+                if (resMActivity == true)
+                    resMatrix.getObjectMatrix().Dispose();
+                var defaultMatrix = new SquareMatrix(deffMatrix.getMatrix());
+                double[] freeCoefs = new double[deffMatrix.dimension.Item2];
+                double[,] result;
+                for (int i = 0; i < freeCoefs.Length; i++)
+                    freeCoefs[i] = exMatrix.getMatrix()[i,0];
+                double[] tRes;
+                tRes = defaultMatrix.GetRoots(freeCoefs);
+                int t = tRes.Length;
+                result = new double[t,1];
+                for (int i = 0; i < tRes.Length; i++)
+                    result[i, 0] = tRes[i];
+                resMatrix = new resultMatrix(result, deffMatrix.gBSize.height + 20);
+                Controls.Add(resMatrix.createMtrx());
+                resMActivity = true;
+            }
+            else { MessageBox.Show("Ќевозможно подсчитать произведение!"); }
         }
 
         private void changeDefaultMatrix_Click(object sender, EventArgs e)
@@ -170,7 +191,45 @@ namespace form
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             }
-            else { MessageBox.Show("Ќевозможно подсчитать разность!"); }
+            else { MessageBox.Show("Ќевозможно подсчитать произведение!"); }
+        }
+
+        private void buttonMultNumb_Click(object sender, EventArgs e)
+        {
+            if (chekOccupancy(exMatrix.txBx) && chekOccupancy(deffMatrix.txBx) && exMatrix.dimension.Item1 == 1 && exMatrix.dimension.Item2 == 1)
+            {
+                if (resMActivity == true)
+                    resMatrix.getObjectMatrix().Dispose();
+                var defaultMatrix = new Matrix(deffMatrix.getMatrix());
+                double extraMatrix = exMatrix.getMatrix()[0,0];
+                Matrix tRes;
+                tRes = defaultMatrix * extraMatrix;
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                Controls.Add(resMatrix.createMtrx());
+                resMActivity = true;
+            }
+            else { MessageBox.Show("Ќевозможно подсчитать произведение!"); }
+        }
+
+        private void buttonGetRevMatrx_Click(object sender, EventArgs e)
+        {
+            if (deffMatrix.squareMatrix)
+            {
+                if (exMActivity == false && chekOccupancy(deffMatrix.txBx) && (new SquareMatrix(deffMatrix.getMatrix())).Determinant() != 0.0)
+                {
+                    if (resMActivity == true)
+                        resMatrix.getObjectMatrix().Dispose();
+                    var defaultMatrix = new SquareMatrix(deffMatrix.getMatrix());
+                    Matrix tRes;
+                    tRes = defaultMatrix.ReversedMatrix();
+                    resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                    Controls.Add(resMatrix.createMtrx());
+                    resMActivity = true;
+                }
+                else { MessageBox.Show("Ќевозможно получить обратную матрицу!"); }
+            }
+            else { MessageBox.Show("Ќевозможно получить обратную матрицу! »сходна€ матрица должна быть квадратной!"); }
+
         }
     }
     class resultMatrix : mtrx
@@ -183,6 +242,7 @@ namespace form
         public override GroupBox gB { get; set; }
         public override (int width, int height) gBSize { get; }
         private double[,] mtrx;
+
         private int locYDeffMatrix;
         private (int x, int y) loc;
         public bool isEnable = false;

@@ -91,6 +91,7 @@
             this.buttonMultNumb.TabIndex = 4;
             this.buttonMultNumb.Text = "Произведение матрицы на число";
             this.buttonMultNumb.UseVisualStyleBackColor = true;
+            this.buttonMultNumb.Click += new System.EventHandler(this.buttonMultNumb_Click);
             // 
             // buttonMultMatrx
             // 
@@ -134,6 +135,7 @@
             this.buttonGetRevMatrx.TabIndex = 0;
             this.buttonGetRevMatrx.Text = "Получить обратную матрицу";
             this.buttonGetRevMatrx.UseVisualStyleBackColor = true;
+            this.buttonGetRevMatrx.Click += new System.EventHandler(this.buttonGetRevMatrx_Click);
             // 
             // createNewMatrix
             // 
@@ -166,7 +168,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1312, 620);
+            this.ClientSize = new System.Drawing.Size(890, 620);
             this.Controls.Add(this.delExtrMatrix);
             this.Controls.Add(this.createNewMatrix);
             this.Controls.Add(this.groupBox1);
