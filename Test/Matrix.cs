@@ -471,6 +471,20 @@ namespace Test
                 first.AmountOfCols == second.AmountOfCols &&
                 first.AmountOfRows == second.AmountOfRows;
         }
+        /// <summary>
+        /// Меняет местами данные ряды
+        /// </summary>
+        /// <param name="first">Первый меняемый ряд</param>
+        /// <param name="second">Второй меняемый ряд</param>
+        protected void SwapRows(int first, int second)
+        {
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                double temp = matrix[second, i];
+                matrix[second, i] = matrix[first, i];
+                matrix[first, i] = temp;
+            }
+        }
     }
     /// <summary>
     /// Класс, реализующий математическую квадратную матрицу
