@@ -9,14 +9,14 @@ namespace P
             double[,] m1 = {
                 {-1, 2, 1, 5},
                 {5, 1, 7, 9},
-                {9, 3, 3,8},
-                {7, 4, 4,7},
+                {9, 3, 4, 8},
+                {7, 4, 4, 7},
 
             };
             double[,] m2 = {
-                {1, 1, 5, 2 },
-                {0, 1, 5, 1 },
-                {2, 0, 5, 6 },
+                {0, 1, 5, 2 },
+                {0, 3, 5, 1 },
+                {0, 0, 7, 6 },
                 {0, 1, 5, 0 },
             };
             double[,] m3 = {
@@ -32,20 +32,24 @@ namespace P
                 {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            SquareMatrix matrix1 = new SquareMatrix(m1);
-            SquareMatrix matrix2 = new SquareMatrix(m2);
+            SquareMatrix matrix1 = new SquareMatrix(Matrix.GenerateRandomMatrix(100, 100, -10, 10));
+            //SquareMatrix matrix1 = new SquareMatrix(m1);
 
-            
-            SquareMatrix factInverse = new SquareMatrix(matrix1.ReversedMatrix());
-            Console.WriteLine(factInverse);
-            
-            Console.WriteLine(matrix1 * factInverse);
+            Console.WriteLine(matrix1);
+            Console.WriteLine(matrix1.Determinant());
+            Console.WriteLine(matrix1.ReversedMatrix());
 
-            foreach (var root in matrix1.GetRoots(new double[] { 1, 1, 1, 1 }))
-                Console.WriteLine(root);
+            //SquareMatrix factInverse = new SquareMatrix(Matrix.GenerateRandomMatrix(20, 20, 1, 1000));
+            //Console.WriteLine(factInverse.Determinant());
+            //Console.WriteLine(factInverse.ReversedMatrix());
 
-            Console.WriteLine(matrix1 * 5);
-            Console.WriteLine(matrix2.ReversedMatrix());
+            //Console.WriteLine(matrix1 * factInverse);
+
+            //foreach (var root in matrix1.GetRoots(new double[] { 1, 1, 1, 1 }))
+            //    Console.WriteLine(root);
+
+            //Console.WriteLine(matrix1 * 5);
+            //Console.WriteLine(matrix2.ReversedMatrix());
         }
     }
 }

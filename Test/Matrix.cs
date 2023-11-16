@@ -433,7 +433,8 @@ namespace Test
             {
                 for (int j = 0; j < AmountOfRows; j++)
                 {
-                    double num = ((end - start) * random.NextDouble() + start);
+                    //double num = ((end - start) * random.NextDouble() + start);
+                    double num = random.Next((int) start, (int) end);
                     matrix[i,j] = num;
                 }
             }
@@ -491,6 +492,9 @@ namespace Test
     /// </summary>
     public class SquareMatrix : Matrix
     {
+        private double[,] LUmatrix; //матрица LU из LUP-разложения
+        private int[] perm; //массив перестановок из LUP-разложения
+        private int toggle; //счетчик четности перестановок из LUP-разложения
         /// <summary>
         /// Конструктор, создающий матрицу 3х3, заполненную пустыми элементами
         /// </summary>
@@ -513,6 +517,7 @@ namespace Test
             this.matrix = matrix;
             this.amountOfRows = matrix.GetLength(0);
             this.amountOfCols = this.amountOfRows;
+            LUPdecomposition();
         }
         /// <summary>
         /// Конструктор, приводящий произвольную матрицу к квадртаной, если это возможно
@@ -530,6 +535,7 @@ namespace Test
             this.matrix = matrix.GetMatrix;
             this.amountOfRows = matrix.AmountOfRows;
             this.amountOfCols = this.amountOfRows;
+            LUPdecomposition();
         }
         /// <summary>
         /// Конструктор, создающий новую пустую квадратную
@@ -538,12 +544,131 @@ namespace Test
         /// <param name="size">Длина квадратной матрицы</param>
         public SquareMatrix(int size) : base(size) { }
         /// <summary>
+        /// LUP-разложение текущей матрицы с поиском опорного элемента в каждом столбце
+        /// Записывает матрицы L и U в одну для экономии памяти
+        /// </summary>
+        public void LUPdecomposition()
+        {
+            int n = AmountOfCols;
+            LUmatrix = Aux.CopyArray(GetMatrix);
+            perm = new int[n];
+            for (int i = 0; i < n;  ++i) { perm[i] = i; }
+            toggle = 1;
+            for (int j = 0; j < n - 1; ++j)
+            {
+                double colMax = LUmatrix[j, j];
+                int pRow = j;
+                for (int i = j + 1; i < n; ++i)
+                {
+                    if (LUmatrix[i, j] > colMax)
+                    {
+                        colMax = LUmatrix[i, j];
+                        pRow = i;
+                    }
+                }
+                if (pRow != j)
+                {
+                    Aux.SwapRows(LUmatrix, pRow, j);
+                    int tmp = perm[pRow];
+                    perm[pRow] = perm[j];
+                    perm[j] = tmp;
+                    toggle = -toggle;
+                }
+                if (Math.Abs(LUmatrix[j, j]) < 1.0E-20)
+                {
+                    LUmatrix = null;
+                    Console.WriteLine("LU null");
+                    return;
+                }
+                for (int i = j + 1; i < n; ++i)
+                {
+                    LUmatrix[i, j] /= LUmatrix[j, j];
+                    for (int k = j + 1; k < n; ++k)
+                        LUmatrix[i, k] -= LUmatrix[i, j] * LUmatrix[j, k];
+                }
+            }
+        }
+        /// <summary>
+        /// Метод для решения системы
+        /// LU*x=b
+        /// </summary>
+        /// <param name="b">массив свободных коэффициентов</param>
+        /// <returns>x - массив значений переменных x1-xn</returns>
+        private double[] HelperSolve(double[] b)
+        {
+            int n = LUmatrix.GetLength(0);
+            double[] x = new double[n];
+            b.CopyTo(x, 0);
+            for (int i = 1; i < n; ++i)
+            {
+                double sum = x[i];
+                for (int j = 0; j < i; ++j)
+                    sum -= LUmatrix[i, j] * x[j];
+                x[i] = sum;
+            }
+            x[n - 1] /= LUmatrix[n - 1, n - 1];
+            for (int i = n - 2; i >= 0; --i)
+            {
+                double sum = x[i];
+                for (int j = i + 1; j < n; ++j)
+                    sum -= LUmatrix[i, j] * x[j];
+                x[i] = sum / LUmatrix[i, i];
+            }
+            return x;
+        }
+        /// <summary>
+        /// Метод для нахождения обратной матрицы с помощью LUP-разложения
+        /// </summary>
+        /// <returns>Матрица, обратная к данной</returns>
+        public SquareMatrix MatrixInverse()
+        {
+            int n = AmountOfCols;
+            double[,] result = Aux.CopyArray(matrix);
+            double[] b = new double[n];
+            for (int i = 0; i < n; ++i)
+            {
+                for (int j = 0; j < n; ++j)
+                {
+                    if (i == perm[j])
+                        b[j] = 1.0;
+                    else
+                        b[j] = 0.0;
+                }
+                double[] x = HelperSolve(b);
+                for (int j = 0; j < n; ++j)
+                    result[j, i] = x[j];
+            }
+            return new(result);
+        }
+        /// <summary>
+        /// Метод для решения системы
+        /// This*x=b с использованием матрицы LU из LUP-разложения
+        /// </summary>
+        /// <param name="b">массив свободных коэффициентов</param>
+        /// <returns>x - массив значений переменных x1-xn</returns>
+        public double[] SystemSolve(double[] b)
+        {
+            int n = AmountOfCols;
+            double[] bp = new double[b.Length];
+            for (int i = 0; i < n; ++i)
+                bp[i] = b[perm[i]];
+            double[] x = HelperSolve(bp);
+            return x;
+        }
+        /// <summary>
         /// Вычисляет детерминант текущей матрицы
         /// </summary>
         /// <returns>Детерминант текущей матрицы</returns>
         public double Determinant()
         {
-            return Determinant(this.GetMatrix);
+            if ((LUmatrix != null) && (amountOfCols > 10))
+            {
+                double result = toggle;
+                for (int i = 0; i < AmountOfCols; ++i)
+                    result *= LUmatrix[i, i];
+                return result;
+            }
+            else return Determinant(GetMatrix);
         }
         /// <summary>
         /// Рекурсивно находит определитель матрицы, соответсвующкй данному массиву
@@ -627,12 +752,19 @@ namespace Test
         /// <returns>Матрица, обратная к данной</returns>
         public SquareMatrix ReversedMatrix()
         {
-            double det = this.Determinant();
-            if (det == 0)
-                throw new ArgumentException("Определитель равен нулю, обратной матрицы не существует!");
+            if ((LUmatrix != null) && (amountOfCols > 10))
+            {
+                return MatrixInverse();
+            }
+            else
+            {
+                double det = Determinant();
+                if (det == 0)
+                    throw new ArgumentException("Определитель равен нулю, обратной матрицы не существует!");
 
-            SquareMatrix transposed = new(this.AdjointMatrix());
-            return new SquareMatrix(transposed * (1/det));
+                SquareMatrix transposed = new(AdjointMatrix());
+                return new SquareMatrix(transposed * (1 / det));
+            }
         }
         
         /// <summary>
@@ -649,23 +781,67 @@ namespace Test
         /// для i-той независимой переменной</returns>
         public double[] GetRoots(double[] freeCoefs)
         {
-            SquareMatrix inverted = this.ReversedMatrix();
-
-            double[,] tmp = new double[ freeCoefs.Length , 1];
-            
-            for (int i = 0; i < freeCoefs.Length; i++)
+            if ((LUmatrix != null) && (amountOfCols > 10))
             {
-                tmp[i, 0] = freeCoefs[i];
+                return SystemSolve(freeCoefs);
             }
-
-            Matrix freeCoefsMatrix = new Matrix(tmp);
-            Matrix res = inverted * freeCoefsMatrix;
-            double[] result = new double[freeCoefs.Length];
-            for (int i = 0; i < freeCoefs.Length; i++)
+            else
             {
-                result[i] = res[i , 0];
-            }
+                SquareMatrix inverted = this.ReversedMatrix();
+
+                double[,] tmp = new double[freeCoefs.Length, 1];
+
+                for (int i = 0; i < freeCoefs.Length; i++)
+                {
+                    tmp[i, 0] = freeCoefs[i];
+                }
+
+                Matrix freeCoefsMatrix = new Matrix(tmp);
+                Matrix res = inverted * freeCoefsMatrix;
+                double[] result = new double[freeCoefs.Length];
+                for (int i = 0; i < freeCoefs.Length; i++)
+                {
+                    result[i] = res[i, 0];
+                }
+                return result;
+            }         
+        }
+    }
+
+    /// <summary>
+    /// Всмопогательный класс, определяющий необходимые методы для работы с двумерными массивами
+    /// </summary>
+    public static class Aux
+    {
+        /// <summary>
+        /// Метод для выделения памяти и копирования текущего массива в новый
+        /// </summary>
+        /// <param name="array">Исходный массив</param>
+        /// <returns>Копия исходного массива</returns>
+        public static double[,] CopyArray(double[,] array)
+        {
+            int n = array.GetLength(0);
+            int k = array.GetLength(1);
+            double[,] result = new double[n, k];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < k; j++)
+                    result[i, j] = array[i, j];
             return result;
+        }
+        /// <summary>
+        /// Меняет местами 2 строки в массиве
+        /// </summary>
+        /// <param name="matrix">Массив для замены</param>
+        /// <param name="first">Индекс первой строки</param>
+        /// <param name="second">Индекс второй строки</param>
+        public static void SwapRows(double[,] matrix, int first, int second)
+        {
+            for (int i = 0; i < matrix.GetLength(0); i++)
+            {
+                double temp = matrix[second, i];
+                matrix[second, i] = matrix[first, i];
+                matrix[first, i] = temp;
+            }
         }
     }
 }
