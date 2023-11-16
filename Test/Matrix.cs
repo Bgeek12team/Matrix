@@ -492,7 +492,8 @@ namespace Test
     /// </summary>
     public class SquareMatrix : Matrix
     {
-        private double[,] LUmatrix; //матрица LU из LUP-разложения
+        private double? det;
+        private double[,]? LUmatrix; //матрица LU из LUP-разложения
         private int[] perm; //массив перестановок из LUP-разложения
         private int toggle; //счетчик четности перестановок из LUP-разложения
         /// <summary>
@@ -577,7 +578,6 @@ namespace Test
                 if (Math.Abs(LUmatrix[j, j]) < 1.0E-20)
                 {
                     LUmatrix = null;
-                    Console.WriteLine("LU null");
                     return;
                 }
                 for (int i = j + 1; i < n; ++i)
@@ -661,14 +661,20 @@ namespace Test
         /// <returns>Детерминант текущей матрицы</returns>
         public double Determinant()
         {
-            if ((LUmatrix != null) && (amountOfCols > 10))
+            if (det != null)
+                return (double)det;
+
+            if ((LUmatrix != null) && (amountOfCols > 9))
             {
                 double result = toggle;
                 for (int i = 0; i < AmountOfCols; ++i)
                     result *= LUmatrix[i, i];
-                return result;
+                det = result;
             }
-            else return Determinant(GetMatrix);
+            else
+                det = Determinant(GetMatrix);
+
+            return (double)det;
         }
         /// <summary>
         /// Рекурсивно находит определитель матрицы, соответсвующкй данному массиву
@@ -709,7 +715,13 @@ namespace Test
 
             for (int row = 0; row < size; row++)
                 for (int col = 0; col < size; col++)
-                    cofactored[row, col] = (int)Math.Pow(-1, row + col) * GetMinor(row, col).Determinant();
+                {
+                    if ((row + col) % 2 == 0)
+                        cofactored[row, col] = GetMinor(row, col).Determinant();
+                    else
+                        cofactored[row, col] = - GetMinor(row, col).Determinant();
+                }
+                    
 
             return new SquareMatrix(cofactored.Transpose());
         }
@@ -752,7 +764,7 @@ namespace Test
         /// <returns>Матрица, обратная к данной</returns>
         public SquareMatrix ReversedMatrix()
         {
-            if ((LUmatrix != null) && (amountOfCols > 10))
+            if ((LUmatrix != null) && (amountOfCols > 9))
             {
                 return MatrixInverse();
             }
@@ -781,7 +793,7 @@ namespace Test
         /// для i-той независимой переменной</returns>
         public double[] GetRoots(double[] freeCoefs)
         {
-            if ((LUmatrix != null) && (amountOfCols > 10))
+            if ((LUmatrix != null) && (amountOfCols > 9))
             {
                 return SystemSolve(freeCoefs);
             }

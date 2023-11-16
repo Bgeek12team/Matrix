@@ -32,7 +32,8 @@ namespace P
                 {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            SquareMatrix matrix1 = new SquareMatrix(Matrix.GenerateRandomMatrix(100, 100, -10, 10));
+            SquareMatrix matrix1 = new SquareMatrix(Matrix.GenerateRandomMatrix(4, 4
+                , -10, 10));
             //SquareMatrix matrix1 = new SquareMatrix(m1);
 
             Console.WriteLine(matrix1);
