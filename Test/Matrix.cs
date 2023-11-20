@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Test
@@ -486,6 +487,82 @@ namespace Test
                 matrix[first, i] = temp;
             }
         }
+        public bool IsDegreeOfTwo()
+        {
+            int n = matrix.GetLength(0);
+            if (n > 0 && (n & (n - 1)) == 0)
+                return true;
+            return false;
+        }
+        public bool EqualsForSize(Matrix B)
+        {
+            return ((this.amountOfRows == B.amountOfRows) && (this.amountOfCols == B.amountOfCols));
+        }
+        public Matrix GetMultiplyStrassen(Matrix B)
+        {
+            if (IsDegreeOfTwo() && EqualsForSize(B))
+                return MultiplyStrassen(this, B);
+            return MultiplyMatrx(B);
+        }
+        private static Matrix MultiplyStrassen(Matrix HelpMatrixA, Matrix HelpMatrixB)
+        {
+            int n = HelpMatrixA.AmountOfRows;
+            if (n == 1)
+                return HelpMatrixA * HelpMatrixB;
+
+            n >>= 1;
+
+            Matrix A11 = new Matrix(n);
+            Matrix A12 = new Matrix(n);
+            Matrix A21 = new Matrix(n);
+            Matrix A22 = new Matrix(n);
+
+            Matrix B11 = new Matrix(n);
+            Matrix B12 = new Matrix(n);
+            Matrix B21 = new Matrix(n);
+            Matrix B22 = new Matrix(n);
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    A11[i, j] = HelpMatrixA[i, j];
+                    A12[i, j] = HelpMatrixA[i, j + n];
+                    A21[i, j] = HelpMatrixA[i + n, j];
+                    A22[i, j] = HelpMatrixA[i + n, j + n];
+
+                    B11[i, j] = HelpMatrixB[i, j];
+                    B12[i, j] = HelpMatrixB[i, j + n];
+                    B21[i, j] = HelpMatrixB[i + n, j];
+                    B22[i, j] = HelpMatrixB[i + n, j + n];
+                }
+
+            Matrix P1 = MultiplyStrassen(A11, B12 - B22);
+            Matrix P2 = MultiplyStrassen(A11 + A12, B22);
+            Matrix P3 = MultiplyStrassen(A21 + A22, B11);
+            Matrix P4 = MultiplyStrassen(A22, B21 - B11);
+            Matrix P5 = MultiplyStrassen(A11 + A22, B11 + B22);
+            Matrix P6 = MultiplyStrassen(A12 - A22, B21 + B22);
+            Matrix P7 = MultiplyStrassen(A11 - A21, B11 + B12);
+
+            Matrix C11 = P5 + P4 - P2 + P6;
+            Matrix C12 = P1 + P2;
+            Matrix C21 = P3 + P4;
+            Matrix C22 = P5 + P1 - P3 - P7;
+
+            Matrix resultMatrix = new Matrix(n);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    resultMatrix[i, j] = C11[i, j];
+                    resultMatrix[i, j + n] = C12[i, j];
+                    resultMatrix[i + n, j] = C21[i, j];
+                    resultMatrix[i + n, j + n] = C22[i, j];
+                }
+            }
+
+            return resultMatrix;
+        }
     }
     /// <summary>
     /// Класс, реализующий математическую квадратную матрицу
@@ -818,6 +895,7 @@ namespace Test
                 return result;
             }         
         }
+        
     }
 
     /// <summary>
