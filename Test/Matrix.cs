@@ -535,33 +535,75 @@ namespace Test
                     B21[i, j] = HelpMatrixB[i + n, j];
                     B22[i, j] = HelpMatrixB[i + n, j + n];
                 }
+
+
             
-
-            Matrix P1 = MultiplyStrassen(A11 + A22, B11 + B22);
-            Matrix P2 = MultiplyStrassen(A21 + A22, B11);
-            Matrix P3 = MultiplyStrassen(A11, B12 - B22);
-            Matrix P4 = MultiplyStrassen(A22, B21 - B11);
-            Matrix P5 = MultiplyStrassen(A11 + A12, B22);
-            Matrix P6 = MultiplyStrassen(A21 - A11, B11 + B12);
-            Matrix P7 = MultiplyStrassen(A12 - A22, B21 + B22);
-            Matrix C11 = P1 + P4 - P5 + P7;
-            Matrix C12 = P3 + P5;
-            Matrix C21 = P2 + P4;
-            Matrix C22 = P1 - P2 + P3 + P6;
-
-            Matrix resultMatrix = new Matrix(C11.AmountOfRows * 2);
-            for (int i = 0; i < n; i++)
+            /*if (n > 512)
             {
-                for (int j = 0; j < n; j++)
-                {
-                    resultMatrix[i, j] = C11[i, j];
-                    resultMatrix[i, j + n] = C12[i, j];
-                    resultMatrix[i + n, j] = C21[i, j];
-                    resultMatrix[i + n, j + n] = C22[i, j];
-                }
-            }
+                Matrix P1 = new Matrix(n);
+                Matrix P2 = new Matrix(n);
+                Matrix P3 = new Matrix(n);
+                Matrix P4 = new Matrix(n);
+                Matrix P5 = new Matrix(n);
+                Matrix P6 = new Matrix(n);
+                Matrix P7 = new Matrix(n);
+                Parallel.Invoke(
+                    () => P1 = MultiplyStrassen(A11 + A22, B11 + B22),
+                    () => P2 = MultiplyStrassen(A21 + A22, B11),
+                    () => P3 = MultiplyStrassen(A11, B12 - B22),
+                    () => P4 = MultiplyStrassen(A22, B21 - B11),
+                    () => P5 = MultiplyStrassen(A11 + A12, B22),
+                    () => P6 = MultiplyStrassen(A21 - A11, B11 + B12),
+                    () => P7 = MultiplyStrassen(A12 - A22, B21 + B22)
+                        );
 
-            return resultMatrix;
+                Matrix C11 = P1 + P4 - P5 + P7;
+                Matrix C12 = P3 + P5;
+                Matrix C21 = P2 + P4;
+                Matrix C22 = P1 - P2 + P3 + P6;
+                Matrix resultMatrix = new Matrix(C11.AmountOfRows * 2);
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        resultMatrix[i, j] = C11[i, j];
+                        resultMatrix[i, j + n] = C12[i, j];
+                        resultMatrix[i + n, j] = C21[i, j];
+                        resultMatrix[i + n, j + n] = C22[i, j];
+                    }
+                }
+
+                return resultMatrix;
+            }
+            else
+            {*/
+                Matrix P1 = MultiplyStrassen(A11 + A22, B11 + B22);
+                Matrix P2 = MultiplyStrassen(A21 + A22, B11);
+                Matrix P3 = MultiplyStrassen(A11, B12 - B22);
+                Matrix P4 = MultiplyStrassen(A22, B21 - B11);
+                Matrix P5 = MultiplyStrassen(A11 + A12, B22);
+                Matrix P6 = MultiplyStrassen(A21 - A11, B11 + B12);
+                Matrix P7 = MultiplyStrassen(A12 - A22, B21 + B22);
+                Matrix C11 = P1 + P4 - P5 + P7;
+                Matrix C12 = P3 + P5;
+                Matrix C21 = P2 + P4;
+                Matrix C22 = P1 - P2 + P3 + P6;
+                Matrix resultMatrix = new Matrix(C11.AmountOfRows * 2);
+                for (int i = 0; i < n; i++)
+                {
+                    for (int j = 0; j < n; j++)
+                    {
+                        resultMatrix[i, j] = C11[i, j];
+                        resultMatrix[i, j + n] = C12[i, j];
+                        resultMatrix[i + n, j] = C21[i, j];
+                        resultMatrix[i + n, j + n] = C22[i, j];
+                    }
+                }
+
+                return resultMatrix;
+        
+
+            
         }
     }
     /// <summary>
