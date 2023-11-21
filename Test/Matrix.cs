@@ -535,21 +535,21 @@ namespace Test
                     B21[i, j] = HelpMatrixB[i + n, j];
                     B22[i, j] = HelpMatrixB[i + n, j + n];
                 }
+            
 
-            Matrix P1 = MultiplyStrassen(A11, B12 - B22);
-            Matrix P2 = MultiplyStrassen(A11 + A12, B22);
-            Matrix P3 = MultiplyStrassen(A21 + A22, B11);
+            Matrix P1 = MultiplyStrassen(A11 + A22, B11 + B22);
+            Matrix P2 = MultiplyStrassen(A21 + A22, B11);
+            Matrix P3 = MultiplyStrassen(A11, B12 - B22);
             Matrix P4 = MultiplyStrassen(A22, B21 - B11);
-            Matrix P5 = MultiplyStrassen(A11 + A22, B11 + B22);
-            Matrix P6 = MultiplyStrassen(A12 - A22, B21 + B22);
-            Matrix P7 = MultiplyStrassen(A11 - A21, B11 + B12);
+            Matrix P5 = MultiplyStrassen(A11 + A12, B22);
+            Matrix P6 = MultiplyStrassen(A21 - A11, B11 + B12);
+            Matrix P7 = MultiplyStrassen(A12 - A22, B21 + B22);
+            Matrix C11 = P1 + P4 - P5 + P7;
+            Matrix C12 = P3 + P5;
+            Matrix C21 = P2 + P4;
+            Matrix C22 = P1 - P2 + P3 + P6;
 
-            Matrix C11 = P5 + P4 - P2 + P6;
-            Matrix C12 = P1 + P2;
-            Matrix C21 = P3 + P4;
-            Matrix C22 = P5 + P1 - P3 - P7;
-
-            Matrix resultMatrix = new Matrix(n);
+            Matrix resultMatrix = new Matrix(C11.AmountOfRows * 2);
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)

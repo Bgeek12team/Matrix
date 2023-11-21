@@ -32,13 +32,12 @@ namespace P
                 {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            SquareMatrix matrix1 = new SquareMatrix(Matrix.GenerateRandomMatrix(4, 4
-                , -10, 10));
+            
             //SquareMatrix matrix1 = new SquareMatrix(m1);
 
-            Console.WriteLine(matrix1);
+            /*Console.WriteLine(matrix1);
             Console.WriteLine(matrix1.Determinant());
-            Console.WriteLine(matrix1.ReversedMatrix());
+            Console.WriteLine(matrix1.ReversedMatrix());*/
 
             //SquareMatrix factInverse = new SquareMatrix(Matrix.GenerateRandomMatrix(20, 20, 1, 1000));
             //Console.WriteLine(factInverse.Determinant());
@@ -51,6 +50,13 @@ namespace P
 
             //Console.WriteLine(matrix1 * 5);
             //Console.WriteLine(matrix2.ReversedMatrix());
+
+
+            Matrix ma1 = Matrix.GenerateRandomMatrix(1024, 1024, -10, 10);
+            Matrix ma2 = Matrix.GenerateRandomMatrix(1024, 1024, -10, 10);
+            Console.WriteLine(ma1);
+            Console.WriteLine(ma2);
+            Console.WriteLine(ma1.GetMultiplyStrassen(ma2));
         }
     }
 }
