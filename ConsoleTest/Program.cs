@@ -52,8 +52,8 @@ namespace P
             //Console.WriteLine(matrix2.ReversedMatrix());
 
 
-            Matrix ma1 = Matrix.GenerateRandomMatrix(1024, 1024, -10, 10);
-            Matrix ma2 = Matrix.GenerateRandomMatrix(1024, 1024, -10, 10);
+            Matrix ma1 = Matrix.GenerateRandomMatrix(256, 256, -10, 10);
+            Matrix ma2 = Matrix.GenerateRandomMatrix(256, 256, -10, 10);
             Console.WriteLine(ma1);
             Console.WriteLine(ma2);
             Console.WriteLine(ma1.GetMultiplyStrassen(ma2));
