@@ -153,7 +153,7 @@
             this.delExtrMatrix.Font = new System.Drawing.Font("Times New Roman", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.delExtrMatrix.Location = new System.Drawing.Point(18, 529);
             this.delExtrMatrix.Name = "delExtrMatrix";
-            this.delExtrMatrix.Size = new System.Drawing.Size(188, 79);
+            this.delExtrMatrix.Size = new System.Drawing.Size(188, 64);
             this.delExtrMatrix.TabIndex = 3;
             this.delExtrMatrix.Text = "Удалить дополнительную матрицу";
             this.delExtrMatrix.UseVisualStyleBackColor = true;

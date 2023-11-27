@@ -11,6 +11,9 @@ namespace form
         extraMatrix exMatrix;
         resultMatrix resMatrix;
 
+        Matrix deffMtrx;
+        Matrix exMtrx;
+
         private bool resMActivity = false;
         private bool exMActivity = false;
         public Form1()
@@ -19,8 +22,13 @@ namespace form
             deffMatrix = new defaultMtrx((3, 4));
             exMatrix = new extraMatrix();
             Controls.Add(deffMatrix.createMtrx());
-
+            Size = new System.Drawing.Size(1300, 660);
+            
+            deffMtrx = new Matrix(deffMatrix.getMatrix());
+            deffMatrix.fillMatrix.Click += eventFillRandomDeffMatrix;
+            deffMatrix.getDeterm.Visible = false;
         }
+
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -49,7 +57,7 @@ namespace form
                 result = new double[t,1];
                 for (int i = 0; i < tRes.Length; i++)
                     result[i, 0] = tRes[i];
-                resMatrix = new resultMatrix(result, deffMatrix.gBSize.height + 20);
+                resMatrix = new resultMatrix(result, deffMatrix.getObjectMatrix().Location.Y + deffMatrix.getObjectMatrix().Height);
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             }
@@ -68,7 +76,11 @@ namespace form
             if (deffMatrix.dimension == dataBank.dimension)
                 return;
             int timeDim = deffMatrix.dimension.Item2;
-
+            if (resMActivity == true)
+            {
+                resMatrix.getObjectMatrix().Dispose();
+                resMActivity = false;
+            }
 
             deffMatrix.getObjectMatrix().Dispose();
             deffMatrix = new defaultMtrx(dataBank.dimension);
@@ -79,7 +91,21 @@ namespace form
                 int scaleLevel = (deffMatrix.dimension.Item2 - timeDim) > 0 ? (deffMatrix.dimension.Item2 - timeDim) : 0;
                 exMatrix.gB.Location = new System.Drawing.Point(exMatrix.gB.Location.X + (35 * scaleLevel), exMatrix.gB.Location.Y);
             }
+            if (deffMatrix.squareMatrix)
+            {
+                deffMtrx = new SquareMatrix(deffMatrix.getMatrix());
+                deffMatrix.getDeterm.Visible = true;
+                deffMatrix.getDeterm.Click += eventGetDetermDefaultMatrx;
+            } else 
+            { 
+                deffMtrx = new Matrix(deffMatrix.getMatrix());
+                deffMatrix.getDeterm.Visible = false;
+            }
+            deffMatrix.fillMatrix.Click += eventFillRandomDeffMatrix;
+
         }
+
+        
 
         private void createNewMatrix_Click(object sender, EventArgs e)
         {
@@ -98,6 +124,7 @@ namespace form
                     return;
                 exMatrix.getObjectMatrix().Dispose();
             }
+            exMtrx = dataBank.dimension.Item2 == dataBank.dimension.Item1 ? new SquareMatrix() : new Matrix();
             exMatrix = new extraMatrix(dataBank.dimension, deffMatrix.getDemensions().Item1 + 240);
             exMatrix.createMtrx();
             Controls.Add(exMatrix.getObjectMatrix());
@@ -109,7 +136,15 @@ namespace form
                 resMatrix.getObjectMatrix().Dispose();
                 resMActivity = false;
             }
+            if (exMatrix.squareMatrix)
+            {
+                exMtrx = new SquareMatrix(exMatrix.getMatrix());
+                exMatrix.getDeterm.Visible = true;
+                exMatrix.getDeterm.Click += eventGetDetermExtraMatrx;
+            } else { exMtrx = new Matrix(exMatrix.getMatrix()); exMatrix.getDeterm.Visible = false; }
+            exMatrix.fillMatrix.Click += eventFillRandomExtraMatrix;
         }
+
 
         private void delExtrMatrix_Click(object sender, EventArgs e)
         {
@@ -154,7 +189,7 @@ namespace form
                 var extraMatrix = new Matrix(exMatrix.getMatrix());
                 Matrix tRes;
                 tRes = defaultMatrix + extraMatrix;
-                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.getObjectMatrix().Location.Y + deffMatrix.getObjectMatrix().Height);
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             } else { MessageBox.Show("Невозможно выполнить сложение!"); }
@@ -170,7 +205,7 @@ namespace form
                 var extraMatrix = new Matrix(exMatrix.getMatrix());
                 Matrix tRes;
                 tRes = defaultMatrix - extraMatrix;
-                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.getObjectMatrix().Location.Y + deffMatrix.getObjectMatrix().Height);
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             }
@@ -187,7 +222,7 @@ namespace form
                 var extraMatrix = new Matrix(exMatrix.getMatrix());
                 Matrix tRes;
                 tRes = defaultMatrix * extraMatrix;
-                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.getObjectMatrix().Location.Y + 10);
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             }
@@ -204,7 +239,7 @@ namespace form
                 double extraMatrix = exMatrix.getMatrix()[0,0];
                 Matrix tRes;
                 tRes = defaultMatrix * extraMatrix;
-                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.getObjectMatrix().Location.Y + deffMatrix.getObjectMatrix().Height);
                 Controls.Add(resMatrix.createMtrx());
                 resMActivity = true;
             }
@@ -222,7 +257,7 @@ namespace form
                     var defaultMatrix = new SquareMatrix(deffMatrix.getMatrix());
                     Matrix tRes;
                     tRes = defaultMatrix.ReversedMatrix();
-                    resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.gBSize.height + 20);
+                    resMatrix = new resultMatrix(tRes.GetMatrix, deffMatrix.getObjectMatrix().Location.Y + deffMatrix.getObjectMatrix().Height);
                     Controls.Add(resMatrix.createMtrx());
                     resMActivity = true;
                 }
@@ -230,6 +265,26 @@ namespace form
             }
             else { MessageBox.Show("Невозможно получить обратную матрицу! Исходная матрица должна быть квадратной!"); }
 
+        }
+        private void eventFillRandomDeffMatrix(object sender, EventArgs e)
+        {
+            deffMtrx.FillRandom(1, 100);
+            deffMatrix.fillMatrix(deffMtrx);
+        }
+        private void eventFillRandomExtraMatrix(object sender, EventArgs e)
+        {
+            exMtrx.FillRandom(1, 100);
+            exMatrix.fillMatrix(exMtrx);
+        }
+        private void eventGetDetermDefaultMatrx(object sender, EventArgs e)
+        {
+            var tMtrx = new SquareMatrix(deffMatrix.getMatrix());
+            MessageBox.Show(tMtrx.Determinant().ToString());
+        }
+        private void eventGetDetermExtraMatrx(object sender, EventArgs e)
+        {
+            var tMtrx = new SquareMatrix(exMatrix.getMatrix());
+            MessageBox.Show(tMtrx.Determinant().ToString());
         }
     }
     class resultMatrix : mtrx
@@ -241,6 +296,7 @@ namespace form
         public override TextBox[,] txBx { get; set; }
         public override GroupBox gB { get; set; }
         public override (int width, int height) gBSize { get; }
+
         private double[,] mtrx;
 
         private int locYDeffMatrix;
@@ -253,13 +309,11 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (5, 15);
-            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 175, 40 * dimension.Item1 + 70);
             this.locYDeffMatrix = locYDeffMatrix;
         }
         public override Control createMtrx()
         {
-            int countElement = dimension.Item1 * dimension.Item2;
-
             gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height), Location = new System.Drawing.Point(260, locYDeffMatrix), Text = "Результат" };
             for (int i = 0; i < dimension.Item1; i++)
             {
@@ -290,7 +344,12 @@ namespace form
         public override int determinant { get; set; }
         public override TextBox[,] txBx { get; set; }
         public override GroupBox gB { get; set; }
+        
         public override (int width, int height) gBSize { get; }
+
+        public Button getDeterm { get; }
+        public Button fillMatrix { get; }
+
         private (int x, int y) loc;
         private int locYDeffMatrix;
         public extraMatrix()
@@ -303,15 +362,28 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (5, 20);
-            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 175, 40 * dimension.Item1 + 70);
             this.locYDeffMatrix = locYDeffMatrix+50;
-            
+            fillMatrix = new Button()
+            {
+                Font = new Font("Times New Roman",
+                14, FontStyle.Bold),
+                Size = new Size(162, 52),
+                Text = "Заполнить случайно"
+            };
+
+            getDeterm = new Button()
+            {
+                Font = new Font("Times New Roman",
+                14, FontStyle.Bold),
+                Size = new Size(162, 52),
+                Text = "Получить детерминант"
+            };
         }
         public override Control createMtrx()
         {
-            int countElement = dimension.Item1 * dimension.Item2;
 
-            gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height), Location = new System.Drawing.Point(locYDeffMatrix, 12), Text = "Доп матрица" };
+            gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height + 108), Location = new System.Drawing.Point(locYDeffMatrix, 12), Text = "Доп матрица" };
             for (int i = 0; i < dimension.Item1; i++)
             {
                 for (int j = 0; j < dimension.Item2; j++)
@@ -329,18 +401,23 @@ namespace form
                 loc.y += 45;
                 loc.x = 5;
             }
+            fillMatrix.Location = new System.Drawing.Point(loc.x, loc.y + 10);
+            getDeterm.Location = new System.Drawing.Point(loc.x, fillMatrix.Location.Y + fillMatrix.Height);
+            gB.Controls.Add(fillMatrix);
+            gB.Controls.Add(getDeterm);
             return gB;
         }
     }
     class defaultMtrx : mtrx
     {
         public override bool squareMatrix { get; }
-
         public override (int, int) dimension { get; set; }
         public override int determinant { get; set; }
         public override TextBox[,] txBx { get; set; }
         public override (int width, int height) gBSize { get; }
         public override GroupBox gB { get; set; }
+        public Button getDeterm { get; }
+        public Button fillMatrix { get; }
         private (int x, int y) loc;
         
         public defaultMtrx((int,int) dimension)
@@ -349,13 +426,26 @@ namespace form
             squareMatrix = determSquare();
             txBx = new TextBox[dimension.Item1, dimension.Item2];
             loc = (10, 20);
-            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 160, 40 * dimension.Item1 + 70);
+            gBSize = ((dimension.Item2 > 3) ? 160 + (45 * (dimension.Item2 - 3)) : 175, 40 * dimension.Item1 + 70);
+            fillMatrix = new Button()
+            {
+                Font = new Font("Times New Roman",
+                14, FontStyle.Bold),
+                Size = new Size(162, 52),
+                Text = "Заполнить случайно"
+            };
+            
+            getDeterm = new Button()
+            {
+                Font = new Font("Times New Roman",
+                14, FontStyle.Bold),
+                Size = new Size(162, 52),
+                Text = "Получить детерминант"
+            };
         }
         public override GroupBox createMtrx()
         {
-            int countElement = dimension.Item1 * dimension.Item2;
-            
-            gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height), Location = new System.Drawing.Point(260, 12), Text = "Стандартная матрица" };
+            gB = new GroupBox() { Size = new Size(gBSize.width, gBSize.height + 108), Location = new System.Drawing.Point(260, 12), Text = "Матрица 1" };
             for (int i = 0; i < dimension.Item1; i++)
             {
                 for (int j = 0; j < dimension.Item2; j++)
@@ -371,6 +461,10 @@ namespace form
                 loc.y += 45;
                 loc.x = 10;
             }
+            fillMatrix.Location = new System.Drawing.Point(loc.x, loc.y + 10);
+            getDeterm.Location = new System.Drawing.Point(loc.x, fillMatrix.Location.Y + fillMatrix.Height);
+            gB.Controls.Add(fillMatrix);
+            gB.Controls.Add(getDeterm);
             return gB;
         }
     }
@@ -382,8 +476,8 @@ namespace form
         abstract public (int width, int height) gBSize { get; }
         abstract public TextBox[,] txBx { get; set; }
         abstract public GroupBox gB { get; set; }
-
         abstract public Control createMtrx();
+        
         virtual public Control getObjectMatrix() 
         {
             return gB;
@@ -395,7 +489,15 @@ namespace form
             {
                 for (int j = 0; j < dimension.Item2; j++)
                 {
-                    matrix[i, j] = Convert.ToDouble(txBx[i, j].Text);
+                    try
+                    {
+                        matrix[i, j] = Convert.ToDouble(txBx[i, j].Text);
+                    }
+                    catch (Exception)
+                    {
+                        matrix[i, j] = 0.0;
+                    }
+                    
                 }
             }
             return matrix;
@@ -409,6 +511,17 @@ namespace form
         virtual public (int, int) getDemensions()
         {
             return (gBSize.width, gBSize.height);
+        }
+        virtual public void fillMatrix(Matrix mtrx)
+        {
+            double[,] values = mtrx.GetMatrix;
+            for (int i = 0; i < values.GetLength(0); i++)
+            {
+                for (int j = 0; j < values.GetLength(1); j++)
+                {
+                    txBx[i,j].Text = values[i,j].ToString();
+                }
+            }
         }
     }
 
