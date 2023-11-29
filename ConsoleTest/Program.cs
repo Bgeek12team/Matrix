@@ -32,7 +32,7 @@ namespace P
                 {-10.5, 4, 1.5 },
                 {-10.5, 4, 1.5 }
             };
-            
+
             //SquareMatrix matrix1 = new SquareMatrix(m1);
 
             /*Console.WriteLine(matrix1);
@@ -51,9 +51,8 @@ namespace P
             //Console.WriteLine(matrix1 * 5);
             //Console.WriteLine(matrix2.ReversedMatrix());
 
-
-            Matrix ma1 = Matrix.GenerateRandomMatrix(256, 256, -10, 10);
-            Matrix ma2 = Matrix.GenerateRandomMatrix(256, 256, -10, 10);
+            SquareMatrix ma1 = SquareMatrix.GenerateRandomSquareMatrix(1024, -10, 10);
+            SquareMatrix ma2 = SquareMatrix.GenerateRandomSquareMatrix(1024, -10, 10);
             Console.WriteLine(ma1);
             Console.WriteLine(ma2);
             Console.WriteLine(ma1.GetMultiplyStrassen(ma2));

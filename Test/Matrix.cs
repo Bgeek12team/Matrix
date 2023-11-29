@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Drawing;
 using System.Globalization;
 using System.Numerics;
@@ -487,107 +488,7 @@ namespace Test
                 matrix[first, i] = temp;
             }
         }
-        public bool IsDegreeOfTwo()
-        {
-            int n = matrix.GetLength(0);
-            if (n > 0 && (n & (n - 1)) == 0)
-                return true;
-            return false;
-        }
-        public bool EqualsForSize(Matrix B)
-        {
-            return ((this.amountOfRows == B.amountOfRows) && (this.amountOfCols == B.amountOfCols));
-        }
-        public Matrix GetMultiplyStrassen(Matrix B)
-        {
-            if (IsDegreeOfTwo() && EqualsForSize(B))
-                return MultiplyStrassen(this, B);
-            return MultiplyMatrx(B);
-        }
-        private static Matrix MultiplyStrassen(Matrix HelpMatrixA, Matrix HelpMatrixB)
-        {
-            int n = HelpMatrixA.AmountOfRows;
-            if (n == 1)
-                return HelpMatrixA * HelpMatrixB;
-
-            n >>= 1;
-
-            Matrix A11 = new Matrix(n);
-            Matrix A12 = new Matrix(n);
-            Matrix A21 = new Matrix(n);
-            Matrix A22 = new Matrix(n);
-
-            Matrix B11 = new Matrix(n);
-            Matrix B12 = new Matrix(n);
-            Matrix B21 = new Matrix(n);
-            Matrix B22 = new Matrix(n);
-
-            Parallel.For(0, n, i =>
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    A11[i, j] = HelpMatrixA[i, j];
-                    A12[i, j] = HelpMatrixA[i, j + n];
-                    A21[i, j] = HelpMatrixA[i + n, j];
-                    A22[i, j] = HelpMatrixA[i + n, j + n];
-
-                    B11[i, j] = HelpMatrixB[i, j];
-                    B12[i, j] = HelpMatrixB[i, j + n];
-                    B21[i, j] = HelpMatrixB[i + n, j];
-                    B22[i, j] = HelpMatrixB[i + n, j + n];
-                }
-            });
-
-            /*Matrix P1 = MultiplyStrassen(A11 + A22, B11 + B22);
-            Matrix P2 = MultiplyStrassen(A21 + A22, B11);
-            Matrix P3 = MultiplyStrassen(A11, B12 - B22);
-            Matrix P4 = MultiplyStrassen(A22, B21 - B11);
-            Matrix P5 = MultiplyStrassen(A11 + A12, B22);
-            Matrix P6 = MultiplyStrassen(A21 - A11, B11 + B12);
-            Matrix P7 = MultiplyStrassen(A12 - A22, B21 + B22);
-            Matrix C11 = P1 + P4 - P5 + P7;
-            Matrix C12 = P3 + P5;
-            Matrix C21 = P2 + P4;
-            Matrix C22 = P1 - P2 + P3 + P6;
-            */
-
-            Matrix P1 = new Matrix(), P2 = new Matrix(), P3 = new Matrix(), P4 = new Matrix(), P5 = new Matrix(),
-                P6 = new Matrix(), P7 = new Matrix(), C11 = new Matrix(), C12 = new Matrix(), C21 = new Matrix(), C22 = new Matrix();
-
-            Parallel.Invoke(
-                () => P1 = MultiplyStrassen(A11 + A22, B11 + B22),
-                () => P2 = MultiplyStrassen(A21 + A22, B11),
-                () => P3 = MultiplyStrassen(A11, B12 - B22),
-                () => P4 = MultiplyStrassen(A22, B21 - B11),
-                () => P5 = MultiplyStrassen(A11 + A12, B22),
-                () => P6 = MultiplyStrassen(A21 - A11, B11 + B12),
-                () => P7 = MultiplyStrassen(A12 - A22, B21 + B22)
-            );
-
-            Parallel.Invoke(
-                () => C11 = P1 + P4 - P5 + P7,
-                () => C12 = P3 + P5,
-                () => C21 = P2 + P4,
-                () => C22 = P1 - P2 + P3 + P6
-            );
-
-            Matrix resultMatrix = new Matrix(C11.AmountOfRows * 2);
-            for (int i = 0; i < n; i++)
-            {
-                for (int j = 0; j < n; j++)
-                {
-                    resultMatrix[i, j] = C11[i, j];
-                    resultMatrix[i, j + n] = C12[i, j];
-                    resultMatrix[i + n, j] = C21[i, j];
-                    resultMatrix[i + n, j + n] = C22[i, j];
-                }
-            }
-
-            return resultMatrix;
         
-
-            
-        }
     }
     /// <summary>
     /// Класс, реализующий математическую квадратную матрицу
@@ -646,6 +547,88 @@ namespace Test
         /// </summary>
         /// <param name="size">Длина квадратной матрицы</param>
         public SquareMatrix(int size) : base(size) { }
+
+
+        
+        public SquareMatrix GetMultiplyStrassen(SquareMatrix B)
+        {
+            if (IsDegreeOfTwo() && EqualsForSize(B))
+                return MultiplyStrassen(this, B);
+            return this * B;
+        }
+        private static SquareMatrix MultiplyStrassen(SquareMatrix HelpMatrixA, SquareMatrix HelpMatrixB)
+        {
+            int n = HelpMatrixA.AmountOfRows;
+            if (n == 64)
+                return HelpMatrixA * HelpMatrixB;
+                
+
+            n >>= 1;
+
+            SquareMatrix A11 = new SquareMatrix(n);
+            SquareMatrix A12 = new SquareMatrix(n);
+            SquareMatrix A21 = new SquareMatrix(n);
+            SquareMatrix A22 = new SquareMatrix(n);
+
+            SquareMatrix B11 = new SquareMatrix(n);
+            SquareMatrix B12 = new SquareMatrix(n);
+            SquareMatrix B21 = new SquareMatrix(n);
+            SquareMatrix B22 = new SquareMatrix(n);
+
+            Parallel.For(0, n, i =>
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    A11[i, j] = HelpMatrixA[i, j];
+                    A12[i, j] = HelpMatrixA[i, j + n];
+                    A21[i, j] = HelpMatrixA[i + n, j];
+                    A22[i, j] = HelpMatrixA[i + n, j + n];
+
+                    B11[i, j] = HelpMatrixB[i, j];
+                    B12[i, j] = HelpMatrixB[i, j + n];
+                    B21[i, j] = HelpMatrixB[i + n, j];
+                    B22[i, j] = HelpMatrixB[i + n, j + n];
+                }
+            });
+
+
+            SquareMatrix P1 = new SquareMatrix(), P2 = new SquareMatrix(), P3 = new SquareMatrix(), P4 = new SquareMatrix(), P5 = new SquareMatrix(),
+                P6 = new SquareMatrix(), P7 = new SquareMatrix(), C11 = new SquareMatrix(), C12 = new SquareMatrix(), C21 = new SquareMatrix(), C22 = new SquareMatrix();
+
+            Parallel.Invoke(
+                () => P1 = MultiplyStrassen(A11 + A22, B11 + B22),
+                () => P2 = MultiplyStrassen(A21 + A22, B11),
+                () => P3 = MultiplyStrassen(A11, B12 - B22),
+                () => P4 = MultiplyStrassen(A22, B21 - B11),
+                () => P5 = MultiplyStrassen(A11 + A12, B22),
+                () => P6 = MultiplyStrassen(A21 - A11, B11 + B12),
+                () => P7 = MultiplyStrassen(A12 - A22, B21 + B22)
+            );
+
+            Parallel.Invoke(
+                () => C11 = P1 + P4 - P5 + P7,
+                () => C12 = P3 + P5,
+                () => C21 = P2 + P4,
+                () => C22 = P1 - P2 + P3 + P6
+            );
+
+            SquareMatrix resultMatrix = new SquareMatrix(C11.AmountOfRows * 2);
+            Parallel.For(0, n, i =>
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    resultMatrix[i, j] = C11[i, j];
+                    resultMatrix[i, j + n] = C12[i, j];
+                    resultMatrix[i + n, j] = C21[i, j];
+                    resultMatrix[i + n, j + n] = C22[i, j];
+                }
+            });
+
+            return resultMatrix;
+
+
+
+        }
         /// <summary>
         /// LUP-разложение текущей матрицы с поиском опорного элемента в каждом столбце
         /// Записывает матрицы L и U в одну для экономии памяти
@@ -920,7 +903,93 @@ namespace Test
                 return result;
             }         
         }
-        
+        public SquareMatrix AddMatrix(SquareMatrix matrix)
+        {
+            if (!HasSameSize(this, matrix))
+                throw new ArgumentException("Матрицы должны иметь одинаковый размер. " +
+                    "Сложение невозможно.");
+
+            SquareMatrix mat = new SquareMatrix(AmountOfRows);
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                for (int j = 0; j < AmountOfRows; j++)
+                {
+                    mat.SetElem(i, j, this.matrix[i, j] + matrix.GetElem(i, j));
+                }
+            }
+            return mat;
+        }
+        public SquareMatrix SubMatrix(SquareMatrix matrix)
+        {
+            if (!HasSameSize(this, matrix))
+                throw new ArgumentException("Матрицы должны иметь одинаковый размер. " +
+                    "Вычитание невозможно.");
+            SquareMatrix mat = new SquareMatrix(AmountOfRows);
+            for (int i = 0; i < AmountOfCols; i++)
+            {
+                for (int j = 0; j < AmountOfRows; j++)
+                {
+                    mat.SetElem(i, j, this.matrix[i, j] - matrix.GetElem(i, j));
+                }
+            }
+            return mat;
+        }
+        public SquareMatrix MultiplyMatrix(SquareMatrix matrix)
+        {
+            int rows1 = this.amountOfCols;
+            int cols1 = this.AmountOfRows;
+            int rows2 = matrix.amountOfCols;
+            int cols2 = matrix.AmountOfRows;
+
+            if (cols1 != rows2)
+            {
+                throw new ArgumentException("Умножение невозможно");
+            }
+
+            double[,] result = new double[rows1, cols2];
+
+            for (int i = 0; i < rows1; i++)
+            {
+                for (int j = 0; j < cols2; j++)
+                {
+                    for (int k = 0; k < cols1; k++)
+                    {
+                        result[i, j] += this[i, k] * matrix[k, j];
+                    }
+                }
+            }
+
+            return new(result);
+        }
+        public bool EqualsForSize(SquareMatrix B)
+        {
+            return ((this.amountOfRows == B.amountOfRows) && (this.amountOfCols == B.amountOfCols));
+        }
+        public bool IsDegreeOfTwo()
+        {
+            int n = matrix.GetLength(0);
+            if (n > 0 && (n & (n - 1)) == 0)
+                return true;
+            return false;
+        }
+        public static SquareMatrix operator +(SquareMatrix matrix, SquareMatrix secondMatrix)
+        {
+            return matrix.AddMatrix(secondMatrix);
+        }
+        public static SquareMatrix operator *(SquareMatrix matrix, SquareMatrix secondMatrix)
+        {
+            return matrix.MultiplyMatrix(secondMatrix);
+        }
+        public static SquareMatrix operator -(SquareMatrix matrix, SquareMatrix secondMatrix)
+        {
+            return matrix.SubMatrix(secondMatrix);
+        }
+        public static SquareMatrix GenerateRandomSquareMatrix(int size, double start, double end)
+        {
+            SquareMatrix matrix = new SquareMatrix(size);
+            matrix.FillRandom(start, end);
+            return matrix;
+        }
     }
 
     /// <summary>
