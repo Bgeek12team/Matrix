@@ -548,8 +548,12 @@ namespace Test
         /// <param name="size">Длина квадратной матрицы</param>
         public SquareMatrix(int size) : base(size) { }
 
+        /// <summary>
+        /// Умножает, если это возможно, текущую матрицу на данную методом Штрассенаа
+        /// </summary>
+        /// <param name="B">Вторая умножаемая матрица</param>
+        /// <returns>Результат матричного умножения двух матрц</returns>
 
-        
         public SquareMatrix GetMultiplyStrassen(SquareMatrix B)
         {
             if (IsDegreeOfTwo() && EqualsForSize(B))
