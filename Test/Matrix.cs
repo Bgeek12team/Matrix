@@ -547,15 +547,13 @@ namespace Test
         /// </summary>
         /// <param name="size">Длина квадратной матрицы</param>
         public SquareMatrix(int size) : base(size) { }
-
-
-        
-        public SquareMatrix GetMultiplyStrassen(SquareMatrix B)
-        {
-            if (IsDegreeOfTwo() && EqualsForSize(B))
-                return MultiplyStrassen(this, B);
-            return this * B;
-        }
+        /// <summary>
+        /// Позволяет умножать квадратные матрицы с размером, являющимся 
+        /// степенью двойки с помощью метода Штрассена
+        /// </summary>
+        /// <param name="HelpMatrixA">Первая умножаемая матрица</param>
+        /// <param name="HelpMatrixB">Вторая умножаемая матрица</param>
+        /// <returns>Результат матричного умножения двух матриц</returns>
         private static SquareMatrix MultiplyStrassen(SquareMatrix HelpMatrixA, SquareMatrix HelpMatrixB)
         {
             int n = HelpMatrixA.AmountOfRows;
@@ -903,6 +901,7 @@ namespace Test
                 return result;
             }         
         }
+        #region вынужденно
         public SquareMatrix AddMatrix(SquareMatrix matrix)
         {
             if (!HasSameSize(this, matrix))
@@ -976,9 +975,11 @@ namespace Test
         {
             return matrix.AddMatrix(secondMatrix);
         }
-        public static SquareMatrix operator *(SquareMatrix matrix, SquareMatrix secondMatrix)
+        public static SquareMatrix operator *(SquareMatrix A, SquareMatrix B)
         {
-            return matrix.MultiplyMatrix(secondMatrix);
+            if (A.IsDegreeOfTwo() && A.EqualsForSize(B))
+                return MultiplyStrassen(A, B);
+            return A.MultiplyMatrix(B);
         }
         public static SquareMatrix operator -(SquareMatrix matrix, SquareMatrix secondMatrix)
         {
@@ -990,6 +991,7 @@ namespace Test
             matrix.FillRandom(start, end);
             return matrix;
         }
+        #endregion
     }
 
     /// <summary>

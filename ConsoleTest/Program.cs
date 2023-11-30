@@ -55,7 +55,7 @@ namespace P
             SquareMatrix ma2 = SquareMatrix.GenerateRandomSquareMatrix(1024, -10, 10);
             Console.WriteLine(ma1);
             Console.WriteLine(ma2);
-            Console.WriteLine(ma1.GetMultiplyStrassen(ma2));
+            Console.WriteLine(ma1 * ma2);
         }
     }
 }
